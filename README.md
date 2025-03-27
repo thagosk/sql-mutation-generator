@@ -1,27 +1,46 @@
-# sql-mutation-generator
-An AI tool that creates flawed yet valid SQL queries for data validation
+SQL Mutation Generator
+Overview
+SQL Mutation Generator is a powerful tool designed to create diverse, executable, but intentionally incorrect SQL queries. This project aims to assist developers and database administrators in testing query validation systems, improving error detection algorithms, and enhancing SQL learning experiences.
 
-# SQL Mutation Generator
+Features
+Generates multiple erroneous SQL queries from correct ones
 
-An AI-powered tool that generates incorrect but syntactically valid SQL query variants for testing and educational purposes.
+Ensures generated queries are executable but yield incorrect results
 
-## Features
+Provides explanations for each erroneous query
 
-- Generates 1-5 incorrect variants per input SQL query
-- Produces realistic error patterns (join conditions, operators, logic)
-- Ensures all variants are executable SQL
-- Parallel processing for high throughput
-- Fallback mechanism for reliable operation
+Supports customizable output formats
 
-## Prerequisites
+Installation
+Clone the repository:
 
-- Python 3.8+
-- Together API key 
-- Input file with SQL queries (one per line)
-
-## Installation
-
-1. Clone the repository:
-```bash
+bash
 git clone https://github.com/yourusername/sql-mutation-generator.git
 cd sql-mutation-generator
+Navigate to the project directory:
+
+bash
+cd Wrong_Queries_Generator_Tedros
+Open the project in your preferred Python IDE.
+
+Update the file paths in the script to match your system:
+
+Set input_file_path to point to your dev.sql file
+
+Set output_file_path to your desired output location
+
+Usage
+Ensure you have the required dependencies installed (sqlite3, together).
+
+Run the script:
+
+bash
+python Wrong_Queries_Generator_Tedros.py
+The script will generate erroneous queries and save them to the specified output file.
+
+Configuration
+Adjust the num_queries parameter in generate_erroneous_queries() to control the number of erroneous queries generated per correct query.
+
+Modify the temperature parameter in the Together AI API call to adjust the creativity of generated queries.
+
+

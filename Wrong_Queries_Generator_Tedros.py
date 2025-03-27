@@ -6,7 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 # Configuration
 input_file_path = r"C:\Users\thago\AppData\Local\Programs\Python\Python38\AI_Assignments\data\dev.sql"
-output_file_path = r"C:\Users\thago\AppData\Local\Programs\Python\Python38\AI_Assignments\data\incorrect_queries_1.sql"
+output_file_path = r"C:\Users\thago\AppData\Local\Programs\Python\Python38\AI_Assignments\data\incorrect_queries.JSON"
 api_key = "tgp_v1_GZpxfMoywN9UP3btHjZ8q6bsyMyGd6bY-lIr6i7AQpw"
 
 # Performance tuning

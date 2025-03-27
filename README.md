@@ -9,7 +9,7 @@ SQL Mutation Generator is a powerful tool designed to create diverse, executable
 - Provides explanations for each erroneous query
 - Supports customizable output formats
 
-## Installation
+## Testing Steps
 ### 1. Clone the repository:
 ```bash
 git clone https://github.com/yourusername/sql-mutation-generator.git

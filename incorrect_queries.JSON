@@ -1,1373 +1,1451 @@
 -- Original query 1:
--- SELECT DISTINCT T1.ID, T1.SEX, T1.Diagnosis FROM Patient AS T1 INNER JOIN Examination AS T2 ON T1.ID = T2.ID WHERE T2.Thrombosis = 2	thrombosis_prediction
+-- SELECT T2.OpenDate FROM frpm AS T1 INNER JOIN schools AS T2 ON T1.CDSCode = T2.CDSCode ORDER BY T1.`Enrollment (K-12)` DESC LIMIT 1	california_schools
 
--- Explanation 1: Incorrect values in conditions
-SELECT DISTINCT T1.ID, T1.SEX, T1.Diagnosis FROM Patient AS T1 INNER JOIN Examination AS T2 ON T1.ID = T2.ID WHERE T2.Thrombosis = 1
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT T2.OpenDate FROM frpm AS T1 INNER JOIN schools AS T2 ON T1.CDSCode != T2.CDSCode ORDER BY T1.`Enrollment (K-12)` DESC LIMIT 1
 
--- Explanation 2: Modified JOIN conditions
-SELECT DISTINCT T1.ID, T1.SEX, T1.Diagnosis FROM Patient AS T1 INNER JOIN Examination AS T2 ON T1.ID = T2.Thrombosis WHERE T2.Thrombosis = 2
+-- Explanation 2: Added DISTINCT
+SELECT DISTINCT T2.OpenDate FROM frpm AS T1 INNER JOIN schools AS T2 ON T1.CDSCode = T2.CDSCode ORDER BY T1.`Enrollment (K-12)` DESC LIMIT 1
+
+-- Explanation 3: Changed INNER JOIN to LEFT JOIN
+SELECT T2.OpenDate FROM frpm AS T1 LEFT JOIN schools AS T2 ON T1.CDSCode = T2.CDSCode ORDER BY T1.`Enrollment (K-12)` DESC LIMIT 1
+
+-- Explanation 4: Changed ORDER BY DESC to ASC
+SELECT T2.OpenDate FROM frpm AS T1 INNER JOIN schools AS T2 ON T1.CDSCode = T2.CDSCode ORDER BY T1.`Enrollment (K-12)` ASC LIMIT 1
 
 ================================================================================
 
 -- Original query 2:
--- SELECT DISTINCT T2.status FROM cards AS T1 INNER JOIN legalities AS T2 ON T2.uuid = T1.uuid WHERE T1.frameVersion = 1997 AND T1.hasContentWarning = 1 AND T1.artist = 'D. Alexander Gregory' AND T2.format = 'legacy'	card_games
+-- SELECT sname FROM satscores WHERE cname = 'Contra Costa' AND sname IS NOT NULL ORDER BY NumTstTakr DESC LIMIT 1	california_schools
 
--- Explanation 1: Incorrect values in conditions
-SELECT DISTINCT T2.status FROM cards AS T1 INNER JOIN legalities AS T2 ON T2.uuid = T1.uuid WHERE T1.frameVersion = 2000 AND T1.hasContentWarning = 0 AND T1.artist = 'D. Alexander Gregory' AND T2.format = 'legacy'
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT sname FROM satscores WHERE cname != 'Contra Costa' AND sname IS NOT NULL ORDER BY NumTstTakr DESC LIMIT 1
 
--- Explanation 2: Modified JOIN conditions
-SELECT DISTINCT T2.status FROM cards AS T1 INNER JOIN legalities AS T2 ON T2.artist = T1.artist WHERE T1.frameVersion = 1997 AND T1.hasContentWarning = 1 AND T1.artist = 'D. Alexander Gregory' AND T2.format = 'legacy'
-
--- Explanation 3: Swapped AND/OR operators
-SELECT DISTINCT T2.status FROM cards AS T1 INNER JOIN legalities AS T2 ON T2.uuid = T1.uuid WHERE T1.frameVersion = 1997 AND T1.hasContentWarning = 1 OR T1.artist = 'D. Alexander Gregory' AND T2.format = 'legacy'
-
--- Explanation 4: Added/removed WHERE conditions
-SELECT DISTINCT T2.status FROM cards AS T1 INNER JOIN legalities AS T2 ON T2.uuid = T1.uuid WHERE T1.frameVersion = 1997 AND T1.hasContentWarning = 1 AND T2.format = 'legacy' OR T1.artist = 'D. Alexander Gregory'
+-- Explanation 2: Removed WHERE clause
+SELECT sname FROM satscores
 
 ================================================================================
 
 -- Original query 3:
--- SELECT T3.client_id FROM `order` AS T1 INNER JOIN account AS T2 ON T1.account_id = T2.account_id INNER JOIN disp AS T4 ON T4.account_id = T2.account_id  INNER JOIN client AS T3 ON T4.client_id = T3.client_id WHERE T1.order_id = 32423	financial
+-- SELECT T1.AvgScrWrite, T2.City FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds = T2.CDSCode ORDER BY T1.NumGE1500 DESC LIMIT 1	california_schools
 
--- Explanation 1: Incorrect values in conditions
-SELECT T3.client\_id FROM `order` AS T1 INNER JOIN account AS T2 ON T1.account\_id = T2.account\_id INNER JOIN disp AS T4 ON T4.account\_id = T2.account\_id INNER JOIN client AS T3 ON T4.client\_id = T3.client\_id WHERE T1.order\_id = 999999999
+-- Explanation 1: Changed ORDER BY DESC to ASC
+SELECT T1.AvgScrWrite, T2.City FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds = T2.CDSCode ORDER BY T1.NumGE1500 ASC LIMIT 1
 
--- Explanation 2: Wrong comparison operators (= instead of !=)
-SELECT T3.client\_id FROM `order` AS T1 INNER JOIN account AS T2 ON T1.account\_id = T2.account\_id INNER JOIN disp AS T4 ON T4.account\_id = T2.account\_id INNER JOIN client AS T3 ON T4.client\_id = T3.client\_id WHERE T1.order\_id != 32423
+-- Explanation 2: Added DISTINCT
+SELECT DISTINCT T1.AvgScrWrite, T2.City FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds = T2.CDSCode ORDER BY T1.NumGE1500 DESC LIMIT 1
 
--- Explanation 3: Modified JOIN conditions (using = instead of ON)
-SELECT T3.client\_id FROM `order` = T1 INNER JOIN account = T2 ON T1.account\_id = T2.account\_id INNER JOIN disp = T4 ON T4.account\_id = T2.account\_id INNER JOIN client = T3 ON T4.client\_id = T3.client\_id WHERE T1.order\_id = 32423
+-- Explanation 3: Changed comparison operator (= to !=)
+SELECT T1.AvgScrWrite, T2.City FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds != T2.CDSCode ORDER BY T1.NumGE1500 DESC LIMIT 1
 
--- Explanation 4: Added WHERE condition (random column and value)
-SELECT T3.client\_id FROM `order` AS T1 INNER JOIN account AS T2 ON T1.account\_id = T2.account\_id INNER JOIN disp AS T4 ON T4.account\_id = T2.account\_id INNER JOIN client AS T3 ON T4.client\_id = T3.client\_id WHERE T1.order\_id = 32423 AND T2.random\_column = 'random\_value'
+-- Explanation 4: Changed INNER JOIN to LEFT JOIN
+SELECT T1.AvgScrWrite, T2.City FROM satscores AS T1 LEFT JOIN schools AS T2 ON T1.cds = T2.CDSCode ORDER BY T1.NumGE1500 DESC LIMIT 1
 
 ================================================================================
 
 -- Original query 4:
--- SELECT T1.AvgScrWrite, T2.City FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds = T2.CDSCode ORDER BY T1.NumGE1500 DESC LIMIT 1	california_schools
+-- SELECT T2.School FROM frpm AS T1 INNER JOIN schools AS T2 ON T1.CDSCode = T2.CDSCode WHERE T2.DOC = 31 ORDER BY T1.`Enrollment (K-12)` DESC LIMIT 1	california_schools
 
--- Explanation 1: Incorrect values in conditions
-SELECT T1.AvgScrWrite, T2.City FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds = T2.CDSCode ORDER BY T1.NumGE1500 DESC LIMIT 1000
-
--- Explanation 2: Swapped AND/OR operators
-SELECT T1.AvgScrWrite, T2.City FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds = T2.CDSCode AND T1.NumGE1500 <> T2.NumGE1500 ORDER BY T1.NumGE1500 DESC LIMIT 1
-
--- Explanation 3: Modified JOIN conditions
-SELECT T1.AvgScrWrite, T2.City FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.AvgScrWrite = T2.CDSCode ORDER BY T1.NumGE1500 DESC LIMIT 1
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT T2.School FROM frpm AS T1 INNER JOIN schools AS T2 ON T1.CDSCode != T2.CDSCode WHERE T2.DOC != 31 ORDER BY T1.`Enrollment (K-12)` DESC LIMIT 1
 
 ================================================================================
 
 -- Original query 5:
--- SELECT DISTINCT T1.element FROM atom AS T1 INNER JOIN bond AS T2 ON T1.molecule_id = T2.molecule_id INNER JOIN connected AS T3 ON T1.atom_id = T3.atom_id WHERE T2.bond_type = '='	toxicology
+-- SELECT CAST(SUM(CASE WHEN County = 'Colusa' THEN 1 ELSE 0 END) AS REAL) / SUM(CASE WHEN County = 'Humboldt' THEN 1 ELSE 0 END) FROM schools WHERE MailState = 'CA'	california_schools
 
--- Explanation 1: Modified JOIN condition for bond table
-SELECT DISTINCT T1.element FROM atom AS T1 INNER JOIN bond AS T2 ON T2.molecule_id = T1.molecule_id INNER JOIN connected AS T3 ON T1.atom_id = T3.atom_id WHERE T2.bond_type = '='
-
--- Explanation 2: Incorrect value in condition for bond_type
-SELECT DISTINCT T1.element FROM atom AS T1 INNER JOIN bond AS T2 ON T1.molecule_id = T2.molecule_id INNER JOIN connected AS T3 ON T1.atom_id = T3.atom_id WHERE T2.bond_type = '~'
-
--- Explanation 3: Added extra condition in WHERE clause
-SELECT DISTINCT T1.element FROM atom AS T1 INNER JOIN bond AS T2 ON T1.molecule_id = T2.molecule_id INNER JOIN connected AS T3 ON T1.atom_id = T3.atom_id WHERE T2.bond_type = '=' AND T1.element IS NULL
-
--- Explanation 4: Changed ORDER BY direction
-SELECT DISTINCT T1.element FROM atom AS T1 INNER JOIN bond AS T2 ON T1.molecule_id = T2.molecule_id INNER JOIN connected AS T3 ON T1.atom_id = T3.atom_id WHERE T2.bond_type = '=' ORDER BY T1.element DESC
-
--- Explanation 5: Wrong LIMIT/OFFSET values
-SELECT DISTINCT T1.element FROM atom AS T1 INNER JOIN bond AS T2 ON T1.molecule_id = T2.molecule_id INNER JOIN connected AS T3 ON T1.atom_id = T3.atom_id WHERE T2.bond_type = '=' LIMIT 0 OFFSET 1000000
+-- Explanation 1: Removed WHERE clause
+SELECT CAST(SUM(CASE WHEN County = 'Colusa' THEN 1 ELSE 0 END) AS REAL) / SUM(CASE WHEN County = 'Humboldt' THEN 1 ELSE 0 END) FROM schools
 
 ================================================================================
 
 -- Original query 6:
--- SELECT player_api_id FROM Player_Attributes WHERE SUBSTR(`date`, 1, 4) = '2010' ORDER BY overall_rating DESC LIMIT 1	european_football_2
+-- SELECT COUNT(T1.CDSCode) FROM frpm AS T1 INNER JOIN satscores AS T2 ON T1.CDSCode = T2.cds WHERE T1.`Charter Funding Type` = 'Directly funded' AND T1.`County Name` = 'Fresno' AND T2.NumTstTakr <= 250	california_schools
 
--- Explanation 1: Incorrect values in conditions
-SELECT player_api_id FROM Player_Attributes WHERE SUBSTR(`date`, 1, 4) = '2011' ORDER BY overall_rating DESC LIMIT 1
+-- Explanation 1: Changed INNER JOIN to LEFT JOIN
+SELECT COUNT(T1.CDSCode) FROM frpm AS T1 LEFT JOIN satscores AS T2 ON T1.CDSCode = T2.cds WHERE T1.`Charter Funding Type` = 'Directly funded' AND T1.`County Name` = 'Fresno' AND T2.NumTstTakr <= 250
 
--- Explanation 2: Swapped AND/OR operators
-SELECT player_api_id FROM Player_Attributes WHERE SUBSTR(`date`, 1, 4) = '2010' AND overall_rating > 90 ORDER BY overall_rating DESC LIMIT 1
+-- Explanation 2: Changed comparison operator (= to !=)
+SELECT COUNT(T1.CDSCode) FROM frpm AS T1 INNER JOIN satscores AS T2 ON T1.CDSCode != T2.cds WHERE T1.`Charter Funding Type` != 'Directly funded' AND T1.`County Name` != 'Fresno' AND T2.NumTstTakr <!= 250
 
--- Explanation 3: Changed ORDER BY direction
-SELECT player_api_id FROM Player_Attributes WHERE SUBSTR(`date`, 1, 4) = '2010' ORDER BY overall_rating ASC LIMIT 1
+-- Explanation 3: Changed COUNT to MAX
+SELECT MAX(T1.CDSCode) FROM frpm AS T1 INNER JOIN satscores AS T2 ON T1.CDSCode = T2.cds WHERE T1.`Charter Funding Type` = 'Directly funded' AND T1.`County Name` = 'Fresno' AND T2.NumTstTakr <= 250
+
+-- Explanation 4: Added LIMIT clause (set to 8)
+SELECT COUNT(T1.CDSCode) FROM frpm AS T1 INNER JOIN satscores AS T2 ON T1.CDSCode = T2.cds WHERE T1.`Charter Funding Type` = 'Directly funded' AND T1.`County Name` = 'Fresno' AND T2.NumTstTakr <= 250 LIMIT 8
 
 ================================================================================
 
 -- Original query 7:
--- SELECT T3.forename, T3.surname, T2.points FROM races AS T1 INNER JOIN driverStandings AS T2 ON T2.raceId = T1.raceId INNER JOIN drivers AS T3 ON T3.driverId = T2.driverId ORDER BY T2.points DESC LIMIT 1	formula_1
+-- SELECT T2.Phone, T2.Ext FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds = T2.CDSCode ORDER BY T1.AvgScrWrite DESC LIMIT 332, 1	california_schools
 
--- Explanation 1: Modified JOIN condition using '!=' instead of '='
-SELECT T3.forename, T3.surname, T2.points FROM races AS T1 INNER JOIN driverStandings AS T2 ON T2.raceId != T1.raceId INNER JOIN drivers AS T3 ON T3.driverId = T2.driverId ORDER BY T2.points DESC LIMIT 1
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT T2.Phone, T2.Ext FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds != T2.CDSCode ORDER BY T1.AvgScrWrite DESC LIMIT 332, 1
+
+-- Explanation 2: Added DISTINCT
+SELECT DISTINCT T2.Phone, T2.Ext FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds = T2.CDSCode ORDER BY T1.AvgScrWrite DESC LIMIT 332, 1
+
+-- Explanation 3: Changed INNER JOIN to LEFT JOIN
+SELECT T2.Phone, T2.Ext FROM satscores AS T1 LEFT JOIN schools AS T2 ON T1.cds = T2.CDSCode ORDER BY T1.AvgScrWrite DESC LIMIT 332, 1
+
+-- Explanation 4: Changed ORDER BY DESC to ASC
+SELECT T2.Phone, T2.Ext FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds = T2.CDSCode ORDER BY T1.AvgScrWrite ASC LIMIT 332, 1
 
 ================================================================================
 
 -- Original query 8:
--- WITH lap_times_in_seconds AS (SELECT driverId, (CASE WHEN SUBSTR(time, 1, INSTR(time, ':') - 1) <> '' THEN CAST(SUBSTR(time, 1, INSTR(time, ':') - 1) AS REAL) * 60 ELSE 0 END + CASE WHEN SUBSTR(time, INSTR(time, ':') + 1, INSTR(time, '.') - INSTR(time, ':') - 1) <> '' THEN CAST(SUBSTR(time, INSTR(time, ':') + 1, INSTR(time, '.') - INSTR(time, ':') - 1) AS REAL) ELSE 0 END + CASE WHEN SUBSTR(time, INSTR(time, '.') + 1) <> '' THEN CAST(SUBSTR(time, INSTR(time, '.') + 1) AS REAL) / 1000 ELSE 0 END) AS time_in_seconds FROM lapTimes) SELECT T2.forename, T2.surname, T1.driverId FROM (SELECT driverId, MIN(time_in_seconds) AS min_time_in_seconds FROM lap_times_in_seconds GROUP BY driverId) AS T1 INNER JOIN drivers AS T2 ON T1.driverId = T2.driverId ORDER BY T1.min_time_in_seconds ASC LIMIT 20	formula_1
+-- SELECT Website FROM schools WHERE County = 'San Joaquin' AND Virtual = 'P' AND Charter = 1	california_schools
 
--- Explanation 2: Modified JOIN condition by comparing different columns
-WITH lap_times_in_seconds AS (SELECT driverId, (CASE WHEN SUBSTR(time, 1, INSTR(time, ':') - 1) <> '' THEN CAST(SUBSTR(time, 1, INSTR(time, ':') - 1) AS REAL) * 60 ELSE 0 END + CASE WHEN SUBSTR(time, INSTR(time, ':') + 1, INSTR(time, '.') - INSTR(time, ':') -
+-- Explanation 1: Added LIMIT clause (set to 10)
+SELECT Website FROM schools WHERE County = 'San Joaquin' AND Virtual = 'P' AND Charter = 1 LIMIT 10
+
+-- Explanation 2: Changed comparison operator (= to !=)
+SELECT Website FROM schools WHERE County != 'San Joaquin' AND Virtual != 'P' AND Charter != 1
 
 ================================================================================
 
 -- Original query 9:
--- SELECT COUNT(DISTINCT T1.ID) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.FG <= 150 OR T2.FG >= 450 AND T2.WBC > 3.5 AND T2.WBC < 9.0 AND T1.SEX = 'M'	thrombosis_prediction
+-- SELECT AdmLName1, District, County, School FROM schools WHERE CharterNum = '0040'	california_schools
 
--- Explanation 1: Changed = to !=
-SELECT COUNT(DISTINCT T1.ID) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID != T2.ID WHERE T2.FG <!= 150 OR T2.FG >!= 450 AND T2.WBC > 3.5 AND T2.WBC < 9.0 AND T1.SEX != 'M'	thrombosis_prediction
+-- Explanation 1: Added LIMIT clause (set to 10)
+SELECT AdmLName1, District, County, School FROM schools WHERE CharterNum = '0040' LIMIT 10
 
--- Explanation 2: Added false condition
-SELECT COUNT(DISTINCT T1.ID) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.FG <= 150 OR T2.FG >= 450 AND T2.WBC > 3.5 AND T2.WBC < 9.0 AND T1.SEX = 'M'	thrombosis_prediction AND 1=0
+-- Explanation 2: Added DISTINCT
+SELECT DISTINCT AdmLName1, District, County, School FROM schools WHERE CharterNum = '0040'
+
+-- Explanation 3: Changed comparison operator (= to !=)
+SELECT AdmLName1, District, County, School FROM schools WHERE CharterNum != '0040'
+
+-- Explanation 4: Removed WHERE clause
+SELECT AdmLName1, District, County, School FROM schools
 
 ================================================================================
 
 -- Original query 10:
--- SELECT COUNT(T1.account_id) FROM account AS T1 INNER JOIN loan AS T2 ON T1.account_id = T2.account_id WHERE T2.date BETWEEN '1995-01-01' AND '1997-12-31' AND T1.frequency = 'POPLATEK MESICNE' AND T2.amount >= 250000	financial
+-- SELECT T2.A2, T2.A3 FROM account AS T1 INNER JOIN district AS T2 ON T1.district_id = T2.district_id INNER JOIN loan AS T3 ON T1.account_id = T3.account_id WHERE T3.loan_id = 4990	financial
 
--- Explanation 1: Modified JOIN condition using "NOT" operator
-SELECT COUNT(T1.account_id) FROM account AS T1 INNER JOIN loan AS T2 ON T1.account_id != T2.account_id WHERE T2.date BETWEEN '1995-01-01' AND '1997-12-31' AND T1.frequency = 'POPLATEK MESICNE' AND T2.amount >= 250000
+-- Explanation 1: Changed INNER JOIN to LEFT JOIN
+SELECT T2.A2, T2.A3 FROM account AS T1 LEFT JOIN district AS T2 ON T1.district_id = T2.district_id LEFT JOIN loan AS T3 ON T1.account_id = T3.account_id WHERE T3.loan_id = 4990
 
--- Explanation 2: Changed AND operator to OR operator in WHERE condition
-SELECT COUNT(T1.account_id) FROM account AS T1 INNER JOIN loan AS T2 ON T1.account_id = T2.account_id WHERE T2.date BETWEEN '1995-01-01' AND '1997-12-31' OR T1.frequency = 'POPLATEK MESICNE' AND T2.amount >= 250000
+-- Explanation 2: Removed WHERE clause
+SELECT T2.A2, T2.A3 FROM account AS T1 INNER JOIN district AS T2 ON T1.district_id = T2.district_id INNER JOIN loan AS T3 ON T1.account_id = T3.account_id
 
 ================================================================================
 
 -- Original query 11:
--- SELECT COUNT(T1.id) FROM cards AS T1 INNER JOIN foreign_data AS T2 ON T1.uuid = T2.uuid WHERE T2.language = 'German' AND T1.isReprint = 1	card_games
+-- SELECT T1.account_id FROM trans AS T1 INNER JOIN account AS T2 ON T1.account_id = T2.account_id WHERE STRFTIME('%Y', T1.date) = '1998' AND T1.operation = 'VYBER KARTOU' AND T1.amount < (SELECT AVG(amount) FROM trans WHERE STRFTIME('%Y', date) = '1998')	financial
 
--- Explanation 1: Modified JOIN conditions
-SELECT COUNT(T1.id) FROM cards AS T1 INNER JOIN foreign_data AS T2 ON T1.uuid != T2.uuid WHERE T2.language = 'German' AND T1.isReprint = 1
+-- Explanation 1: Removed WHERE clause
+SELECT T1.account_id FROM trans AS T1 INNER JOIN account AS T2 ON T1.account_id = T2.account_id
 
--- Explanation 2: Incorrect values in conditions
-SELECT COUNT(T1.id) FROM cards AS T1 INNER JOIN foreign_data AS T2 ON T1.uuid = T2.uuid WHERE T2.language = 'French' AND T1.isReprint = 1
+-- Explanation 2: Changed comparison operator (= to !=)
+SELECT T1.account_id FROM trans AS T1 INNER JOIN account AS T2 ON T1.account_id != T2.account_id WHERE STRFTIME('%Y', T1.date) != '1998' AND T1.operation != 'VYBER KARTOU' AND T1.amount < (SELECT AVG(amount) FROM trans WHERE STRFTIME('%Y', date) != '1998')
 
 -- Explanation 3: Swapped AND/OR operators
-SELECT COUNT(T1.id) FROM cards AS T1 INNER JOIN foreign_data AS T2 ON T1.uuid = T2.uuid WHERE T2.language = 'German' OR T1.isReprint = 1 AND T1.isReprint = 2
+SELECT T1.account_id FROM trans AS T1 INNER JOIN account AS T2 ON T1.account_id = T2.account_id WHERE STRFTIME('%Y', T1.date) = '1998' OR T1.operation = 'VYBER KARTOU' OR T1.amount < (SELECT AVG(amount) FROM trans WHERE STRFTIME('%Y', date) = '1998')
+
+-- Explanation 4: Added LIMIT clause (set to 4)
+SELECT T1.account_id FROM trans AS T1 INNER JOIN account AS T2 ON T1.account_id = T2.account_id WHERE STRFTIME('%Y', T1.date) = '1998' AND T1.operation = 'VYBER KARTOU' AND T1.amount < (SELECT AVG(amount) FROM trans WHERE STRFTIME('%Y', date) = '1998') LIMIT 4
 
 ================================================================================
 
 -- Original query 12:
--- SELECT T2.Currency FROM yearmonth AS T1 INNER JOIN customers AS T2 ON T1.CustomerID = T2.CustomerID WHERE T1.Date = '201306' AND T1.Consumption = 214582.17	debit_card_specializing
+-- SELECT T2.client_id FROM account AS T1 INNER JOIN disp AS T2 ON T1.account_id = T2.account_id WHERE T1.frequency = 'POPLATEK PO OBRATU' AND T2.type = 'DISPONENT'	financial
 
--- Explanation 1: Incorrect value in condition for Date
-SELECT T2.Currency FROM yearmonth AS T1 INNER JOIN customers AS T2 ON T1.CustomerID = T2.CustomerID WHERE T1.Date = '201307' AND T1.Consumption = 214582.17
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT T2.client_id FROM account AS T1 INNER JOIN disp AS T2 ON T1.account_id != T2.account_id WHERE T1.frequency != 'POPLATEK PO OBRATU' AND T2.type != 'DISPONENT'
 
--- Explanation 2: Modified JOIN condition using wrong column
-SELECT T2.Currency FROM yearmonth AS T1 INNER JOIN customers AS T2 ON T1.Currency = T2.CustomerID WHERE T1.Date = '201306' AND T1.Consumption = 214582.17
+-- Explanation 2: Removed WHERE clause
+SELECT T2.client_id FROM account AS T1 INNER JOIN disp AS T2 ON T1.account_id = T2.account_id
 
--- Explanation 3: Swapped AND/OR operators
-SELECT T2.Currency FROM yearmonth AS T1 INNER JOIN customers AS T2 ON T1.CustomerID = T2.CustomerID WHERE T1.Date = '201306' OR T1.Consumption = 214582.17  -- this will return all customers with any date, not just June 2013
+-- Explanation 3: Changed INNER JOIN to LEFT JOIN
+SELECT T2.client_id FROM account AS T1 LEFT JOIN disp AS T2 ON T1.account_id = T2.account_id WHERE T1.frequency = 'POPLATEK PO OBRATU' AND T2.type = 'DISPONENT'
+
+-- Explanation 4: Swapped AND/OR operators
+SELECT T2.client_id FROM account AS T1 INNER JOIN disp AS T2 ON T1.account_id = T2.account_id WHERE T1.frequency = 'POPLATEK PO OBRATU' OR T2.type = 'DISPONENT'
+
+-- Explanation 5: Added LIMIT clause (set to 7)
+SELECT T2.client_id FROM account AS T1 INNER JOIN disp AS T2 ON T1.account_id = T2.account_id WHERE T1.frequency = 'POPLATEK PO OBRATU' AND T2.type = 'DISPONENT' LIMIT 7
 
 ================================================================================
 
 -- Original query 13:
--- SELECT COUNT(DISTINCT T.element) FROM ( SELECT DISTINCT T2.molecule_id, T1.element FROM atom AS T1 INNER JOIN molecule AS T2 ON T1.molecule_id = T2.molecule_id INNER JOIN bond AS T3 ON T2.molecule_id = T3.molecule_id WHERE T3.bond_type = '-' ) AS T	toxicology
+-- SELECT T1.account_id, T2.A2, T2.A3 FROM account AS T1 INNER JOIN district AS T2 ON T1.district_id = T2.district_id INNER JOIN loan AS T3 ON T1.account_id = T3.account_id WHERE T3.amount > 300000	financial
 
--- Explanation 1: Changed = to !=
-SELECT COUNT(DISTINCT T.element) FROM ( SELECT DISTINCT T2.molecule_id, T1.element FROM atom AS T1 INNER JOIN molecule AS T2 ON T1.molecule_id != T2.molecule_id INNER JOIN bond AS T3 ON T2.molecule_id != T3.molecule_id WHERE T3.bond_type != '-' ) AS T	toxicology
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT T1.account_id, T2.A2, T2.A3 FROM account AS T1 INNER JOIN district AS T2 ON T1.district_id != T2.district_id INNER JOIN loan AS T3 ON T1.account_id != T3.account_id WHERE T3.amount > 300000
+
+-- Explanation 2: Changed INNER JOIN to LEFT JOIN
+SELECT T1.account_id, T2.A2, T2.A3 FROM account AS T1 LEFT JOIN district AS T2 ON T1.district_id = T2.district_id LEFT JOIN loan AS T3 ON T1.account_id = T3.account_id WHERE T3.amount > 300000
+
+-- Explanation 3: Added LIMIT clause (set to 2)
+SELECT T1.account_id, T2.A2, T2.A3 FROM account AS T1 INNER JOIN district AS T2 ON T1.district_id = T2.district_id INNER JOIN loan AS T3 ON T1.account_id = T3.account_id WHERE T3.amount > 300000 LIMIT 2
+
+-- Explanation 4: Added DISTINCT
+SELECT DISTINCT T1.account_id, T2.A2, T2.A3 FROM account AS T1 INNER JOIN district AS T2 ON T1.district_id = T2.district_id INNER JOIN loan AS T3 ON T1.account_id = T3.account_id WHERE T3.amount > 300000
+
+-- Explanation 5: Removed WHERE clause
+SELECT T1.account_id, T2.A2, T2.A3 FROM account AS T1 INNER JOIN district AS T2 ON T1.district_id = T2.district_id INNER JOIN loan AS T3 ON T1.account_id = T3.account_id
 
 ================================================================================
 
 -- Original query 14:
--- SELECT T3.race FROM superhero AS T1 INNER JOIN hero_attribute AS T2 ON T1.id = T2.hero_id INNER JOIN race AS T3 ON T1.race_id = T3.id ORDER BY T2.attribute_value DESC LIMIT 1	superhero
+-- SELECT T1.A2 FROM district AS T1 INNER JOIN client AS T2 ON T1.district_id = T2.district_id WHERE T2.birth_date = '1976-01-29' AND T2.gender = 'F'	financial
 
--- Explanation 1: Incorrect values in conditions
-SELECT T3.race FROM superhero AS T1 INNER JOIN hero_attribute AS T2 ON T1.id = T2.hero_id INNER JOIN race AS T3 ON T1.race_id = T3.id ORDER BY T2.attribute_value ASC LIMIT 1
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT T1.A2 FROM district AS T1 INNER JOIN client AS T2 ON T1.district_id != T2.district_id WHERE T2.birth_date != '1976-01-29' AND T2.gender != 'F'
 
 -- Explanation 2: Swapped AND/OR operators
-SELECT T3.race FROM superhero AS T1 INNER JOIN hero_attribute AS T2 ON T1.id = T2.hero_id AND T1.race_id = T3.id INNER JOIN race AS T3 ON T2.hero_id = T1.id ORDER BY T2.attribute_value DESC LIMIT 1
+SELECT T1.A2 FROM district AS T1 INNER JOIN client AS T2 ON T1.district_id = T2.district_id WHERE T2.birth_date = '1976-01-29' OR T2.gender = 'F'
 
--- Explanation 3: Wrong comparison operators
-SELECT T3.race FROM superhero AS T1 INNER JOIN hero_attribute AS T2 ON T1.id != T2.hero_id INNER JOIN race AS T3 ON T1.race_id = T3.id ORDER BY T2.attribute_value DESC LIMIT 1
+-- Explanation 3: Removed WHERE clause
+SELECT T1.A2 FROM district AS T1 INNER JOIN client AS T2 ON T1.district_id = T2.district_id
 
--- Explanation 4: Wrong LIMIT/OFFSET values
-SELECT T3.race FROM superhero AS T1 INNER JOIN hero_attribute AS T2 ON T1.id = T2.hero_id INNER JOIN race AS T3 ON T1.race_id = T3.id ORDER BY T2.attribute_value DESC LIMIT 1000
+-- Explanation 4: Added DISTINCT
+SELECT DISTINCT T1.A2 FROM district AS T1 INNER JOIN client AS T2 ON T1.district_id = T2.district_id WHERE T2.birth_date = '1976-01-29' AND T2.gender = 'F'
+
+-- Explanation 5: Added LIMIT clause (set to 7)
+SELECT T1.A2 FROM district AS T1 INNER JOIN client AS T2 ON T1.district_id = T2.district_id WHERE T2.birth_date = '1976-01-29' AND T2.gender = 'F' LIMIT 7
 
 ================================================================================
 
 -- Original query 15:
--- SELECT CAST(SUM(IIF(STRFTIME('%Y', T3.dob) < '1985' AND T1.laps > 50, 1, 0)) AS REAL) * 100 / COUNT(*) FROM results AS T1 INNER JOIN races AS T2 on T1.raceId = T2.raceId INNER JOIN drivers AS T3 on T1.driverId = T3.driverId WHERE T2.year BETWEEN 2000 AND 2005	formula_1
+-- SELECT T2.account_id FROM disp AS T2  INNER JOIN card AS T1 ON T1.disp_id = T2.disp_id  WHERE T1.type = 'gold'	financial
 
--- Explanation 1: Changed = to !=
-SELECT CAST(SUM(IIF(STRFTIME('%Y', T3.dob) < '1985' AND T1.laps > 50, 1, 0)) AS REAL) * 100 / COUNT(*) FROM results AS T1 INNER JOIN races AS T2 on T1.raceId != T2.raceId INNER JOIN drivers AS T3 on T1.driverId != T3.driverId WHERE T2.year BETWEEN 2000 AND 2005	formula_1
+-- Explanation 1: Changed INNER JOIN to LEFT JOIN
+SELECT T2.account_id FROM disp AS T2 LEFT JOIN card AS T1 ON T1.disp_id = T2.disp_id WHERE T1.type = 'gold'
 
--- Explanation 2: Added false condition
-SELECT CAST(SUM(IIF(STRFTIME('%Y', T3.dob) < '1985' AND T1.laps > 50, 1, 0)) AS REAL) * 100 / COUNT(*) FROM results AS T1 INNER JOIN races AS T2 on T1.raceId = T2.raceId INNER JOIN drivers AS T3 on T1.driverId = T3.driverId WHERE T2.year BETWEEN 2000 AND 2005	formula_1 AND 1=0
+-- Explanation 2: Added LIMIT clause (set to 6)
+SELECT T2.account_id FROM disp AS T2 INNER JOIN card AS T1 ON T1.disp_id = T2.disp_id WHERE T1.type = 'gold' LIMIT 6
 
--- Explanation 3: Reversed ORDER BY
-SELECT CAST(SUM(IIF(STRFTIME('%Y', T3.dob) < '1985' AND T1.laps > 50, 1, 0)) AS REAL) * 100 / COUNT(*) FROM results AS T1 INNER JOIN races AS T2 on T1.raceId = T2.raceId INNER JOIN drivers AS T3 on T1.driverId = T3.driverId WHERE T2.year BETWEEN 2000 AND 2005	formula_1 ORDER BY 1 DESC
+-- Explanation 3: Removed WHERE clause
+SELECT T2.account_id FROM disp AS T2 INNER JOIN card AS T1 ON T1.disp_id = T2.disp_id
 
 ================================================================================
 
 -- Original query 16:
--- SELECT T2.driverId, T2.code FROM results AS T1 INNER JOIN drivers AS T2 on T1.driverId = T2.driverId WHERE STRFTIME('%Y', T2.dob) = '1971' AND T1.fastestLapTime IS NOT NULL	formula_1
+-- SELECT T1.account_id, T1.date FROM account AS T1 INNER JOIN district AS T2 ON T1.district_id = T2.district_id WHERE T2.A2 = 'Prachatice'	financial
 
--- Explanation 1: Incorrect values in conditions
-SELECT T2.driverId, T2.code FROM results AS T1 INNER JOIN drivers AS T2 on T1.driverId = T2.driverId WHERE STRFTIME('%Y', T2.dob) = '1972' AND T1.fastestLapTime IS NOT NULL;
+-- Explanation 1: Changed INNER JOIN to LEFT JOIN
+SELECT T1.account_id, T1.date FROM account AS T1 LEFT JOIN district AS T2 ON T1.district_id = T2.district_id WHERE T2.A2 = 'Prachatice'
 
--- Explanation 2: Swapped AND/OR operators
-SELECT T2.driverId, T2.code FROM results AS T1 INNER JOIN drivers AS T2 on T1.driverId = T2.driverId WHERE STRFTIME('%Y', T2.dob) = '1971' OR T1.fastestLapTime IS NOT NULL;
+-- Explanation 2: Changed comparison operator (= to !=)
+SELECT T1.account_id, T1.date FROM account AS T1 INNER JOIN district AS T2 ON T1.district_id != T2.district_id WHERE T2.A2 != 'Prachatice'
 
--- Explanation 3: Modified JOIN conditions
-SELECT T2.driverId, T2.code FROM results AS T1 LEFT JOIN drivers AS T2 on T1.driverId = T2.driverId WHERE STRFTIME('%Y', T2.dob) = '1971' AND T1.fastestLapTime IS NOT NULL;
+-- Explanation 3: Added DISTINCT
+SELECT DISTINCT T1.account_id, T1.date FROM account AS T1 INNER JOIN district AS T2 ON T1.district_id = T2.district_id WHERE T2.A2 = 'Prachatice'
+
+-- Explanation 4: Removed WHERE clause
+SELECT T1.account_id, T1.date FROM account AS T1 INNER JOIN district AS T2 ON T1.district_id = T2.district_id
+
+-- Explanation 5: Added LIMIT clause (set to 10)
+SELECT T1.account_id, T1.date FROM account AS T1 INNER JOIN district AS T2 ON T1.district_id = T2.district_id WHERE T2.A2 = 'Prachatice' LIMIT 10
 
 ================================================================================
 
 -- Original query 17:
--- SELECT T1.label FROM molecule AS T1 INNER JOIN ( SELECT T.molecule_id, COUNT(T.bond_type) FROM bond AS T WHERE T.bond_type = '=' GROUP BY T.molecule_id ORDER BY COUNT(T.bond_type) DESC LIMIT 1 ) AS T2 ON T1.molecule_id = T2.molecule_id	toxicology
+-- SELECT T1.A15 FROM district AS T1 INNER JOIN `account` AS T2 ON T1.district_id = T2.district_id WHERE T2.account_id = 532	financial
 
--- Explanation 1: Changed = to !=
-SELECT T1.label FROM molecule AS T1 INNER JOIN ( SELECT T.molecule_id, COUNT(T.bond_type) FROM bond AS T WHERE T.bond_type != '!=' GROUP BY T.molecule_id ORDER BY COUNT(T.bond_type) DESC LIMIT 1 ) AS T2 ON T1.molecule_id != T2.molecule_id	toxicology
+-- Explanation 1: Added LIMIT clause (set to 2)
+SELECT T1.A15 FROM district AS T1 INNER JOIN `account` AS T2 ON T1.district_id = T2.district_id WHERE T2.account_id = 532 LIMIT 2
 
--- Explanation 2: Added false condition
-SELECT T1.label FROM molecule AS T1 INNER JOIN ( SELECT T.molecule_id, COUNT(T.bond_type) FROM bond AS T WHERE T.bond_type = '=' GROUP BY T.molecule_id ORDER BY COUNT(T.bond_type) DESC LIMIT 1 ) AS T2 ON T1.molecule_id = T2.molecule_id	toxicology AND 1=0
+-- Explanation 2: Added DISTINCT
+SELECT DISTINCT T1.A15 FROM district AS T1 INNER JOIN `account` AS T2 ON T1.district_id = T2.district_id WHERE T2.account_id = 532
 
--- Explanation 3: Reversed ORDER BY
-SELECT T1.label FROM molecule AS T1 INNER JOIN ( SELECT T.molecule_id, COUNT(T.bond_type) FROM bond AS T WHERE T.bond_type = '=' GROUP BY T.molecule_id ORDER BY COUNT(T.bond_type) ASC LIMIT 1 ) AS T2 ON T1.molecule_id = T2.molecule_id	toxicology
+-- Explanation 3: Changed comparison operator (= to !=)
+SELECT T1.A15 FROM district AS T1 INNER JOIN `account` AS T2 ON T1.district_id != T2.district_id WHERE T2.account_id != 532
 
--- Explanation 4: Limited to 1 row
-SELECT T1.label FROM molecule AS T1 INNER JOIN ( SELECT T.molecule_id, COUNT(T.bond_type) FROM bond AS T WHERE T.bond_type = '=' GROUP BY T.molecule_id ORDER BY COUNT(T.bond_type) DESC LIMIT 1 1 ) AS T2 ON T1.molecule_id = T2.molecule_id	toxicology
+-- Explanation 4: Removed WHERE clause
+SELECT T1.A15 FROM district AS T1 INNER JOIN `account` AS T2 ON T1.district_id = T2.district_id
+
+-- Explanation 5: Changed INNER JOIN to LEFT JOIN
+SELECT T1.A15 FROM district AS T1 LEFT JOIN `account` AS T2 ON T1.district_id = T2.district_id WHERE T2.account_id = 532
 
 ================================================================================
 
 -- Original query 18:
--- SELECT T1.name FROM cards AS T1 INNER JOIN sets AS T2 ON T2.code = T1.setCode WHERE T2.name = 'Coldsnap' ORDER BY T1.convertedManaCost DESC LIMIT 1	card_games
+-- SELECT T2.account_id FROM district AS T1 INNER JOIN account AS T2 ON T1.district_id = T2.district_id INNER JOIN disp AS T3 ON T2.account_id = T3.account_id WHERE T3.type = 'OWNER' AND T1.A2 = 'Tabor'	financial
 
--- Explanation 1: Modified JOIN condition using `<` instead of `=`
-SELECT T1.name FROM cards AS T1 INNER JOIN sets AS T2 ON T2.code < T1.setCode WHERE T2.name = 'Coldsnap' ORDER BY T1.convertedManaCost DESC LIMIT 1
+-- Explanation 1: Changed INNER JOIN to LEFT JOIN
+SELECT T2.account_id FROM district AS T1 LEFT JOIN account AS T2 ON T1.district_id = T2.district_id LEFT JOIN disp AS T3 ON T2.account_id = T3.account_id WHERE T3.type = 'OWNER' AND T1.A2 = 'Tabor'
 
 ================================================================================
 
 -- Original query 19:
--- SELECT T1.baseSetSize FROM sets AS T1 INNER JOIN set_translations AS T2 ON T2.setCode = T1.code WHERE T2.translation = 'Rinascita di Alara'	card_games
+-- SELECT DISTINCT T1.bond_type FROM bond AS T1 INNER JOIN connected AS T2 ON T1.bond_id = T2.bond_id INNER JOIN atom AS T3 ON T2.atom_id = T3.atom_id WHERE T3.element = 'cl'	toxicology
 
--- Explanation 1: Changed = to !=
-SELECT T1.baseSetSize FROM sets AS T1 INNER JOIN set_translations AS T2 ON T2.setCode != T1.code WHERE T2.translation != 'Rinascita di Alara'	card_games
+-- Explanation 1: Changed INNER JOIN to LEFT JOIN
+SELECT DISTINCT T1.bond_type FROM bond AS T1 LEFT JOIN connected AS T2 ON T1.bond_id = T2.bond_id LEFT JOIN atom AS T3 ON T2.atom_id = T3.atom_id WHERE T3.element = 'cl'
 
 ================================================================================
 
 -- Original query 20:
--- SELECT T1.forename, T1.surname, T1.nationality, T3.name FROM drivers AS T1 INNER JOIN driverStandings AS T2 on T1.driverId = T2.driverId INNER JOIN races AS T3 on T2.raceId = T3.raceId ORDER BY JULIANDAY(T1.dob) DESC LIMIT 1	formula_1
+-- SELECT COUNT(T.molecule_id) FROM molecule AS T WHERE molecule_id BETWEEN 'TR000' AND 'TR099' AND T.label = '+'	toxicology
 
--- Explanation 1: Changed = to !=
-SELECT T1.forename, T1.surname, T1.nationality, T3.name FROM drivers AS T1 INNER JOIN driverStandings AS T2 on T1.driverId != T2.driverId INNER JOIN races AS T3 on T2.raceId != T3.raceId ORDER BY JULIANDAY(T1.dob) DESC LIMIT 1	formula_1
+-- Explanation 1: Swapped AND/OR operators
+SELECT COUNT(T.molecule_id) FROM molecule AS T WHERE molecule_id BETWEEN 'TR000' OR 'TR099' OR T.label = '+'
 
--- Explanation 2: Added false condition
-SELECT T1.forename, T1.surname, T1.nationality, T3.name FROM drivers AS T1 INNER JOIN driverStandings AS T2 on T1.driverId = T2.driverId INNER JOIN races AS T3 on T2.raceId = T3.raceId ORDER BY JULIANDAY(T1.dob) DESC LIMIT 1	formula_1 WHERE 1=0
+-- Explanation 2: Removed WHERE clause
+SELECT COUNT(T.molecule_id) FROM molecule AS T
+
+-- Explanation 3: Changed COUNT to MAX
+SELECT MAX(T.molecule_id) FROM molecule AS T WHERE molecule_id BETWEEN 'TR000' AND 'TR099' AND T.label = '+'
+
+-- Explanation 4: Changed comparison operator (= to !=)
+SELECT COUNT(T.molecule_id) FROM molecule AS T WHERE molecule_id BETWEEN 'TR000' AND 'TR099' AND T.label != '+'
 
 ================================================================================
 
 -- Original query 21:
--- SELECT COUNT(T.molecule_id) FROM molecule AS T WHERE T.label = '+'	toxicology
+-- SELECT T.element FROM atom AS T WHERE T.atom_id = 'TR000_1'	toxicology
 
--- Explanation 1: Incorrect values in conditions
-SELECT COUNT(T.molecule_id) FROM molecule AS T WHERE T.label = '-'
-
--- Explanation 2: Swapped AND/OR operators
-SELECT COUNT(T.molecule_id) FROM molecule AS T WHERE T.label = '+' AND 'toxicology'
+-- Explanation 1: Added DISTINCT
+SELECT DISTINCT T.element FROM atom AS T WHERE T.atom_id = 'TR000_1'
 
 ================================================================================
 
 -- Original query 22:
--- SELECT COUNT(DISTINCT T1.molecule_id) FROM molecule AS T1 INNER JOIN atom AS T2 ON T1.molecule_id = T2.molecule_id WHERE T2.element = 'n' AND T1.label = '+'	toxicology
+-- SELECT DISTINCT T3.bond_type FROM atom AS T1 INNER JOIN connected AS T2 ON T1.atom_id = T2.atom_id INNER JOIN bond AS T3 ON T3.bond_id = T2.bond_id WHERE T1.element = 'sn'	toxicology
 
--- Explanation 1: Changed = to !=
-SELECT COUNT(DISTINCT T1.molecule_id) FROM molecule AS T1 INNER JOIN atom AS T2 ON T1.molecule_id != T2.molecule_id WHERE T2.element != 'n' AND T1.label != '+'	toxicology
+-- Explanation 1: Changed INNER JOIN to LEFT JOIN
+SELECT DISTINCT T3.bond_type FROM atom AS T1 LEFT JOIN connected AS T2 ON T1.atom_id = T2.atom_id LEFT JOIN bond AS T3 ON T3.bond_id = T2.bond_id WHERE T1.element = 'sn'
 
--- Explanation 2: Added false condition
-SELECT COUNT(DISTINCT T1.molecule_id) FROM molecule AS T1 INNER JOIN atom AS T2 ON T1.molecule_id = T2.molecule_id WHERE T2.element = 'n' AND T1.label = '+'	toxicology AND 1=0
+-- Explanation 2: Removed WHERE clause
+SELECT DISTINCT T3.bond_type FROM atom AS T1 INNER JOIN connected AS T2 ON T1.atom_id = T2.atom_id INNER JOIN bond AS T3 ON T3.bond_id = T2.bond_id
 
--- Explanation 3: Reversed ORDER BY
-SELECT COUNT(DISTINCT T1.molecule_id) FROM molecule AS T1 INNER JOIN atom AS T2 ON T1.molecule_id = T2.molecule_id WHERE T2.element = 'n' AND T1.label = '+'	toxicology ORDER BY 1 DESC
+-- Explanation 3: Removed DISTINCT
+SELECT T3.bond_type FROM atom AS T1 INNER JOIN connected AS T2 ON T1.atom_id = T2.atom_id INNER JOIN bond AS T3 ON T3.bond_id = T2.bond_id WHERE T1.element = 'sn'
 
--- Explanation 4: Limited to 1 row
-SELECT COUNT(DISTINCT T1.molecule_id) FROM molecule AS T1 INNER JOIN atom AS T2 ON T1.molecule_id = T2.molecule_id WHERE T2.element = 'n' AND T1.label = '+'	toxicology LIMIT 1
+-- Explanation 4: Added LIMIT clause (set to 9)
+SELECT DISTINCT T3.bond_type FROM atom AS T1 INNER JOIN connected AS T2 ON T1.atom_id = T2.atom_id INNER JOIN bond AS T3 ON T3.bond_id = T2.bond_id WHERE T1.element = 'sn' LIMIT 9
+
+-- Explanation 5: Changed comparison operator (= to !=)
+SELECT DISTINCT T3.bond_type FROM atom AS T1 INNER JOIN connected AS T2 ON T1.atom_id != T2.atom_id INNER JOIN bond AS T3 ON T3.bond_id != T2.bond_id WHERE T1.element != 'sn'
 
 ================================================================================
 
 -- Original query 23:
--- SELECT T2.fastestLapTime FROM drivers AS T1 INNER JOIN results AS T2 ON T2.driverId = T1.driverId WHERE T1.forename = 'Lewis' AND T1.surname = 'Hamilton' AND T2.fastestLapTime IS NOT NULL ORDER BY T2.fastestLapTime ASC LIMIT 1	formula_1
+-- SELECT COUNT(T.bond_id) FROM bond AS T WHERE T.bond_type = '-'	toxicology
 
--- Explanation 1: Changed = to !=
-SELECT T2.fastestLapTime FROM drivers AS T1 INNER JOIN results AS T2 ON T2.driverId != T1.driverId WHERE T1.forename != 'Lewis' AND T1.surname != 'Hamilton' AND T2.fastestLapTime IS NOT NULL ORDER BY T2.fastestLapTime ASC LIMIT 1	formula_1
+-- Explanation 1: Added LIMIT clause (set to 6)
+SELECT COUNT(T.bond_id) FROM bond AS T WHERE T.bond_type = '-' LIMIT 6
+
+-- Explanation 2: Removed WHERE clause
+SELECT COUNT(T.bond_id) FROM bond AS T
+
+-- Explanation 3: Changed comparison operator (= to !=)
+SELECT COUNT(T.bond_id) FROM bond AS T WHERE T.bond_type != '-'
+
+-- Explanation 4: Changed COUNT to MAX
+SELECT MAX(T.bond_id) FROM bond AS T WHERE T.bond_type = '-'
 
 ================================================================================
 
 -- Original query 24:
--- SELECT T2.date FROM circuits AS T1 INNER JOIN races AS T2 ON T2.circuitID = T1.circuitId WHERE T1.name = 'Brands Hatch' AND T2.name = 'British Grand Prix' ORDER BY T2.year DESC LIMIT 1	formula_1
+-- SELECT CAST(COUNT(CASE WHEN T1.element = 'h' AND T2.label = '+' THEN T2.molecule_id ELSE NULL END) AS REAL) * 100 / COUNT(T2.molecule_id) FROM atom AS T1 INNER JOIN molecule AS T2 ON T1.molecule_id = T2.molecule_id	toxicology
 
--- Explanation 1: Incorrect values in conditions
-SELECT T2.date FROM circuits AS T1 INNER JOIN races AS T2 ON T2.circuitID = T1.circuitId WHERE T1.name = 'Brands Hatch' AND T2.name = 'Monaco Grand Prix' ORDER BY T2.year DESC LIMIT 1
+-- Explanation 1: Changed COUNT to MAX
+SELECT CAST(MAX(CASE WHEN T1.element = 'h' AND T2.label = '+' THEN T2.molecule_id ELSE NULL END) AS REAL) * 100 / MAX(T2.molecule_id) FROM atom AS T1 INNER JOIN molecule AS T2 ON T1.molecule_id = T2.molecule_id
 
--- Explanation 2: Swapped AND/OR operators
-SELECT T2.date FROM circuits AS T1 INNER JOIN races AS T2 ON T2.circuitID = T1.circuitId WHERE T1.name = 'Brands Hatch' OR T2.name = 'British Grand Prix' ORDER BY T2.year DESC LIMIT 1
+-- Explanation 2: Changed comparison operator (= to !=)
+SELECT CAST(COUNT(CASE WHEN T1.element != 'h' AND T2.label != '+' THEN T2.molecule_id ELSE NULL END) AS REAL) * 100 / COUNT(T2.molecule_id) FROM atom AS T1 INNER JOIN molecule AS T2 ON T1.molecule_id != T2.molecule_id
 
 ================================================================================
 
 -- Original query 25:
--- SELECT id, language FROM set_translations WHERE id = ( SELECT id FROM cards WHERE convertedManaCost = 5 ) AND setCode = '10E'	card_games
+-- SELECT COUNT(T1.bond_id), T2.label FROM bond AS T1 INNER JOIN molecule AS T2 ON T1.molecule_id = T2.molecule_id WHERE T1.bond_type = '=' AND T2.molecule_id = 'TR006' GROUP BY T2.label	toxicology
 
--- Explanation 1: Incorrect values in conditions
-SELECT id, language FROM set_translations WHERE id = ( SELECT id FROM cards WHERE convertedManaCost != 5 ) AND setCode = '10E'
+-- Explanation 1: Removed WHERE clause
+SELECT COUNT(T1.bond_id), T2.label FROM bond AS T1 INNER JOIN molecule AS T2 ON T1.molecule_id = T2.molecule_id
 
--- Explanation 2: Swapped AND/OR operators
-SELECT id, language FROM set_translations WHERE id = ( SELECT id FROM cards WHERE convertedManaCost = 5 ) OR setCode = '10E'
+-- Explanation 2: Added LIMIT clause (set to 7)
+SELECT COUNT(T1.bond_id), T2.label FROM bond AS T1 INNER JOIN molecule AS T2 ON T1.molecule_id = T2.molecule_id WHERE T1.bond_type = '=' AND T2.molecule_id = 'TR006' GROUP BY T2.label LIMIT 7
 
 ================================================================================
 
 -- Original query 26:
--- SELECT AVG(CAST(SUBSTR(T2.fastestLapTime, 1, INSTR(T2.fastestLapTime, ':') - 1) AS INTEGER) * 60 + CAST(SUBSTR(T2.fastestLapTime, INSTR(T2.fastestLapTime, ':') + 1) AS REAL)) FROM drivers AS T1 INNER JOIN results AS T2 ON T1.driverId = T2.driverId WHERE T1.surname = 'Hamilton' AND T1.forename = 'Lewis'	formula_1
+-- SELECT COUNT(DISTINCT T2.molecule_id), SUM(CASE WHEN T2.label = '+' THEN 1 ELSE 0 END) FROM bond AS T1 INNER JOIN molecule AS T2 ON T1.molecule_id = T2.molecule_id WHERE T1.bond_type = '='	toxicology
 
--- Explanation 1: Changed = to !=
-SELECT AVG(CAST(SUBSTR(T2.fastestLapTime, 1, INSTR(T2.fastestLapTime, ':') - 1) AS INTEGER) * 60 + CAST(SUBSTR(T2.fastestLapTime, INSTR(T2.fastestLapTime, ':') + 1) AS REAL)) FROM drivers AS T1 INNER JOIN results AS T2 ON T1.driverId != T2.driverId WHERE T1.surname != 'Hamilton' AND T1.forename != 'Lewis'	formula_1
-
--- Explanation 2: Added false condition
-SELECT AVG(CAST(SUBSTR(T2.fastestLapTime, 1, INSTR(T2.fastestLapTime, ':') - 1) AS INTEGER) * 60 + CAST(SUBSTR(T2.fastestLapTime, INSTR(T2.fastestLapTime, ':') + 1) AS REAL)) FROM drivers AS T1 INNER JOIN results AS T2 ON T1.driverId = T2.driverId WHERE T1.surname = 'Hamilton' AND T1.forename = 'Lewis'	formula_1 AND 1=0
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT COUNT(DISTINCT T2.molecule_id), SUM(CASE WHEN T2.label != '+' THEN 1 ELSE 0 END) FROM bond AS T1 INNER JOIN molecule AS T2 ON T1.molecule_id != T2.molecule_id WHERE T1.bond_type != '!='
 
 ================================================================================
 
 -- Original query 27:
--- SELECT T1.lap FROM pitStops AS T1 INNER JOIN drivers AS T2 on T1.driverId = T2.driverId INNER JOIN races AS T3 on T1.raceId = T3.raceId WHERE T2.forename = 'Lewis' AND T2.surname = 'Hamilton' AND T3.year = 2011 AND T3.name = 'Australian Grand Prix'	formula_1
+-- SELECT T2.label FROM atom AS T1 INNER JOIN molecule AS T2 ON T1.molecule_id = T2.molecule_id WHERE T1.element = 'ca' GROUP BY T2.label ORDER BY COUNT(T2.label) DESC LIMIT 1	toxicology
 
--- Explanation 1: Incorrect values in conditions
-SELECT T1.lap FROM pitStops AS T1 INNER JOIN drivers AS T2 on T1.driverId = T2.driverId INNER JOIN races AS T3 on T1.raceId = T3.raceId WHERE T2.forename = 'Lewis' AND T2.surname = 'Hamilton' AND T3.year = 2012 AND T3.name = 'Australian Grand Prix'
+-- Explanation 1: Removed WHERE clause
+SELECT T2.label FROM atom AS T1 INNER JOIN molecule AS T2 ON T1.molecule_id = T2.molecule_id
 
--- Explanation 2: Swapped AND/OR operators
-SELECT T1.lap FROM pitStops AS T1 INNER JOIN drivers AS T2 on T1.driverId = T2.driverId INNER JOIN races AS T3 on T1.raceId = T3.raceId WHERE T2.forename = 'Lewis' OR T2.surname = 'Hamilton' AND T3.year = 2011 AND T3.name = 'Australian Grand Prix'
+-- Explanation 2: Changed ORDER BY DESC to ASC
+SELECT T2.label FROM atom AS T1 INNER JOIN molecule AS T2 ON T1.molecule_id = T2.molecule_id WHERE T1.element = 'ca' GROUP BY T2.label ORDER BY COUNT(T2.label) ASC LIMIT 1
 
--- Explanation 3: Modified JOIN conditions
-SELECT T1.lap FROM pitStops AS T1 INNER JOIN drivers AS T2 on T1.raceId = T2.driverId INNER JOIN races AS T3 on T1.raceId = T3.raceId WHERE T2.forename = 'Lewis' AND T2.surname = 'Hamilton' AND T3.year = 2011 AND T3.name = 'Australian Grand Prix'
+-- Explanation 3: Changed COUNT to MAX
+SELECT T2.label FROM atom AS T1 INNER JOIN molecule AS T2 ON T1.molecule_id = T2.molecule_id WHERE T1.element = 'ca' GROUP BY T2.label ORDER BY MAX(T2.label) DESC LIMIT 1
+
+-- Explanation 4: Changed INNER JOIN to LEFT JOIN
+SELECT T2.label FROM atom AS T1 LEFT JOIN molecule AS T2 ON T1.molecule_id = T2.molecule_id WHERE T1.element = 'ca' GROUP BY T2.label ORDER BY COUNT(T2.label) DESC LIMIT 1
 
 ================================================================================
 
 -- Original query 28:
--- SELECT nationality FROM drivers WHERE dob IS NOT NULL ORDER BY dob ASC LIMIT 1	formula_1
+-- SELECT COUNT(DISTINCT T1.id) FROM cards AS T1 INNER JOIN legalities AS T2 ON T1.uuid = T2.uuid WHERE T2.status = 'Restricted' AND T1.isStarter = 1	card_games
 
--- Explanation 2: Swapped AND/OR operator
-SELECT nationality FROM drivers WHERE dob IS NOT NULL OR dob IS NULL ORDER BY dob ASC LIMIT 1
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT COUNT(DISTINCT T1.id) FROM cards AS T1 INNER JOIN legalities AS T2 ON T1.uuid != T2.uuid WHERE T2.status != 'Restricted' AND T1.isStarter != 1
 
--- Explanation 3: Wrong comparison operator
-SELECT nationality FROM drivers WHERE dob IS NOT = NULL ORDER BY dob ASC LIMIT 1
+-- Explanation 2: Changed COUNT to MAX
+SELECT MAX(DISTINCT T1.id) FROM cards AS T1 INNER JOIN legalities AS T2 ON T1.uuid = T2.uuid WHERE T2.status = 'Restricted' AND T1.isStarter = 1
 
 ================================================================================
 
 -- Original query 29:
--- SELECT COUNT(T2.Id) FROM posts AS T1 INNER JOIN comments AS T2 ON T1.Id = T2.PostId GROUP BY T1.Id ORDER BY SUM(T1.Score) DESC LIMIT 1	codebase_community
+-- SELECT mcmName FROM sets WHERE releaseDate = '2017-06-09'	card_games
 
--- Explanation 1: Modified JOIN condition using != operator
-SELECT COUNT(T2.Id) FROM posts AS T1 INNER JOIN comments AS T2 ON T1.Id != T2.PostId GROUP BY T1.Id ORDER BY SUM(T1.Score) DESC LIMIT 1
+-- Explanation 1: Added LIMIT clause (set to 9)
+SELECT mcmName FROM sets WHERE releaseDate = '2017-06-09' LIMIT 9
+
+-- Explanation 2: Changed comparison operator (= to !=)
+SELECT mcmName FROM sets WHERE releaseDate != '2017-06-09'
+
+-- Explanation 3: Added DISTINCT
+SELECT DISTINCT mcmName FROM sets WHERE releaseDate = '2017-06-09'
 
 ================================================================================
 
 -- Original query 30:
--- SELECT T.atom_id FROM connected AS T WHERE T.bond_id = 'TR000_2_5'	toxicology
+-- SELECT COUNT(type) FROM cards WHERE artist = 'Aaron Boyd'	card_games
 
--- Explanation 1: Incorrect values in conditions
-SELECT T.atom_id FROM connected AS T WHERE T.bond_id != 'TR000_2_5'
+-- Explanation 1: Added LIMIT clause (set to 1)
+SELECT COUNT(type) FROM cards WHERE artist = 'Aaron Boyd' LIMIT 1
 
--- Explanation 2: Swapped AND/OR operators
-SELECT T.atom_id FROM connected AS T WHERE T.bond_id = 'TR000_2_5' OR T.atom_id = 1
-
--- Explanation 3: Added WHERE condition
-SELECT T.atom_id FROM connected AS T WHERE T.bond_id = 'TR000_2_5' AND T.atom_id = 0
-
--- Explanation 4: Wrong LIMIT value
-SELECT T.atom_id FROM connected AS T WHERE T.bond_id = 'TR000_2_5' LIMIT 0
+-- Explanation 2: Removed WHERE clause
+SELECT COUNT(type) FROM cards
 
 ================================================================================
 
 -- Original query 31:
--- SELECT T2.AdmEmail1, T2.School FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds = T2.CDSCode ORDER BY T1.NumGE1500 DESC LIMIT 1	california_schools
+-- SELECT id FROM cards WHERE convertedManaCost = 0	card_games
 
--- Explanation 1: Incorrect values in conditions
-SELECT T2.AdmEmail1, T2.School FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds = T2.CDSCode ORDER BY T1.NumGE1500 ASC LIMIT 1
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT id FROM cards WHERE convertedManaCost != 0
 
--- Explanation 2: Wrong comparison operators (= instead of !=)
-SELECT T2.AdmEmail1, T2.School FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds != T2.CDSCode ORDER BY T1.NumGE1500 DESC LIMIT 1
+-- Explanation 2: Removed WHERE clause
+SELECT id FROM cards
 
--- Explanation 3: Modified JOIN conditions (using AND instead of OR)
-SELECT T2.AdmEmail1, T2.School FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds = T2.CDSCode AND T1.SATMathematicsLevel = 'Level 3' ORDER BY T1.NumGE1500 DESC LIMIT 1
+-- Explanation 3: Added DISTINCT
+SELECT DISTINCT id FROM cards WHERE convertedManaCost = 0
 
--- Explanation 4: Changed ORDER BY direction (using ASC instead of DESC)
-SELECT T2.AdmEmail1, T2.School FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds = T2.CDSCode ORDER BY T1.NumGE1500 ASC LIMIT 1
+-- Explanation 4: Added LIMIT clause (set to 4)
+SELECT id FROM cards WHERE convertedManaCost = 0 LIMIT 4
 
 ================================================================================
 
 -- Original query 32:
--- SELECT COUNT(T1.member_id) FROM member AS T1 INNER JOIN major AS T2 ON T1.link_to_major = T2.major_id WHERE T2.college = 'College of Engineering'	student_club
+-- SELECT id FROM cards WHERE cardKingdomFoilId IS NOT NULL AND cardKingdomId IS NOT NULL	card_games
 
--- Explanation 1: Modified JOIN condition using != instead of =
-SELECT COUNT(T1.member_id) FROM member AS T1 INNER JOIN major AS T2 ON T1.link_to_major != T2.major_id WHERE T2.college = 'College of Engineering'
+-- Explanation 1: Swapped AND/OR operators
+SELECT id FROM cards WHERE cardKingdomFoilId IS NOT NULL OR cardKingdomId IS NOT NULL
+
+-- Explanation 2: Added DISTINCT
+SELECT DISTINCT id FROM cards WHERE cardKingdomFoilId IS NOT NULL AND cardKingdomId IS NOT NULL
 
 ================================================================================
 
 -- Original query 33:
--- SELECT notes FROM income WHERE source = 'Fundraising' AND date_received = '2019-09-14'	student_club
+-- SELECT setCode FROM set_translations WHERE language = 'Spanish'	card_games
 
--- Explanation 1: Incorrect values in conditions
-SELECT notes FROM income WHERE source != 'Fundraising' AND date_received = '2019-09-14'
+-- Explanation 1: Removed WHERE clause
+SELECT setCode FROM set_translations
 
--- Explanation 2: Swapped AND/OR operators
-SELECT notes FROM income WHERE source = 'Fundraising' OR date_received = '2019-09-14'
+-- Explanation 2: Added DISTINCT
+SELECT DISTINCT setCode FROM set_translations WHERE language = 'Spanish'
+
+-- Explanation 3: Changed comparison operator (= to !=)
+SELECT setCode FROM set_translations WHERE language != 'Spanish'
+
+-- Explanation 4: Added LIMIT clause (set to 7)
+SELECT setCode FROM set_translations WHERE language = 'Spanish' LIMIT 7
 
 ================================================================================
 
 -- Original query 34:
--- SELECT T2.Street, T2.City, T2.State, T2.Zip FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds = T2.CDSCode ORDER BY CAST(T1.NumGE1500 AS REAL) / T1.NumTstTakr ASC LIMIT 1	california_schools
+-- SELECT T1.type FROM sets AS T1 INNER JOIN set_translations AS T2 ON T2.setCode = T1.code WHERE T2.translation = 'Hauptset Zehnte Edition'	card_games
 
--- Explanation 1: Incorrect values in conditions
-SELECT T2.Street, T2.City, T2.State, T2.Zip FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds = T2.CDSCode ORDER BY CAST(T1.NumGE1500 AS REAL) / T1.NumTstTakr ASC LIMIT 1 WHERE T2.State = 'CO'
+-- Explanation 1: Changed INNER JOIN to LEFT JOIN
+SELECT T1.type FROM sets AS T1 LEFT JOIN set_translations AS T2 ON T2.setCode = T1.code WHERE T2.translation = 'Hauptset Zehnte Edition'
 
--- Explanation 2: Wrong comparison operators
-SELECT T2.Street, T2.City, T2.State, T2.Zip FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds = T2.CDSCode WHERE T1.cds != T2.CDSCode ORDER BY CAST(T1.NumGE1500 AS REAL) / T1.NumTstTakr ASC LIMIT 1
+-- Explanation 2: Added LIMIT clause (set to 10)
+SELECT T1.type FROM sets AS T1 INNER JOIN set_translations AS T2 ON T2.setCode = T1.code WHERE T2.translation = 'Hauptset Zehnte Edition' LIMIT 10
 
--- Explanation 3: Modified JOIN conditions
-SELECT T2.Street, T2.City, T2.State, T2.Zip FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.NumGE1500 = T2.CDSCode ORDER BY CAST(T1.NumGE1500 AS REAL) / T1.NumTstTakr ASC LIMIT 1
+-- Explanation 3: Added DISTINCT
+SELECT DISTINCT T1.type FROM sets AS T1 INNER JOIN set_translations AS T2 ON T2.setCode = T1.code WHERE T2.translation = 'Hauptset Zehnte Edition'
 
--- Explanation 4: Changed ORDER BY direction
-SELECT T2.Street, T2.City, T2.State, T2.Zip FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds = T2.CDSCode ORDER BY CAST(T1.NumGE1500 AS REAL) / T1.NumTstTakr DESC LIMIT 1
+-- Explanation 4: Removed WHERE clause
+SELECT T1.type FROM sets AS T1 INNER JOIN set_translations AS T2 ON T2.setCode = T1.code
+
+-- Explanation 5: Changed comparison operator (= to !=)
+SELECT T1.type FROM sets AS T1 INNER JOIN set_translations AS T2 ON T2.setCode != T1.code WHERE T2.translation != 'Hauptset Zehnte Edition'
 
 ================================================================================
 
 -- Original query 35:
--- SELECT CAST(SUM(T1.A2 = 'Decin') AS REAL) * 100 / COUNT(account_id) FROM district AS T1 INNER JOIN account AS T2 ON T1.district_id = T2.district_id WHERE STRFTIME('%Y', T2.date) = '1993'	financial
+-- SELECT T1.baseSetSize FROM sets AS T1 INNER JOIN set_translations AS T2 ON T2.setCode = T1.code WHERE T2.translation = 'Hauptset Zehnte Edition'	card_games
 
--- Explanation 1: Incorrect values in conditions
-SELECT CAST(SUM(T1.A2 = 'Jecin') AS REAL) * 100 / COUNT(account\_id) FROM district AS T1 INNER JOIN account AS T2 ON T1.district\_id = T2.district\_id WHERE STRFTIME('%Y', T2.date) = '1994'
-
--- Explanation 2: Modified JOIN conditions
-SELECT CAST(SUM(T1.A2 = 'Decin') AS REAL) * 100 / COUNT(account\_id) FROM district AS T1 RIGHT JOIN account AS T2 ON T1.account\_id = T2.district\_id WHERE STRFTIME('%Y', T2.date) = '1993'
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT T1.baseSetSize FROM sets AS T1 INNER JOIN set_translations AS T2 ON T2.setCode != T1.code WHERE T2.translation != 'Hauptset Zehnte Edition'
 
 ================================================================================
 
 -- Original query 36:
--- SELECT CAST(COUNT(CASE WHEN T3.alignment = 'Good' THEN T1.id ELSE NULL END) AS REAL) * 100 / COUNT(T1.id) FROM superhero AS T1 INNER JOIN publisher AS T2 ON T1.publisher_id = T2.id INNER JOIN alignment AS T3 ON T1.alignment_id = T3.id WHERE T2.publisher_name = 'Marvel Comics'	superhero
+-- SELECT T1.name, T1.id FROM sets AS T1 INNER JOIN set_translations AS T2 ON T1.code = T2.setCode WHERE T1.block = 'Shadowmoor' AND T2.language = 'Italian' ORDER BY T1.id LIMIT 2	card_games
 
--- Explanation 1: Changed = to !=
-SELECT CAST(COUNT(CASE WHEN T3.alignment != 'Good' THEN T1.id ELSE NULL END) AS REAL) * 100 / COUNT(T1.id) FROM superhero AS T1 INNER JOIN publisher AS T2 ON T1.publisher_id != T2.id INNER JOIN alignment AS T3 ON T1.alignment_id != T3.id WHERE T2.publisher_name != 'Marvel Comics'	superhero
+-- Explanation 1: Added DISTINCT
+SELECT DISTINCT T1.name, T1.id FROM sets AS T1 INNER JOIN set_translations AS T2 ON T1.code = T2.setCode WHERE T1.block = 'Shadowmoor' AND T2.language = 'Italian' ORDER BY T1.id LIMIT 2
 
--- Explanation 2: Added false condition
-SELECT CAST(COUNT(CASE WHEN T3.alignment = 'Good' THEN T1.id ELSE NULL END) AS REAL) * 100 / COUNT(T1.id) FROM superhero AS T1 INNER JOIN publisher AS T2 ON T1.publisher_id = T2.id INNER JOIN alignment AS T3 ON T1.alignment_id = T3.id WHERE T2.publisher_name = 'Marvel Comics'	superhero AND 1=0
+-- Explanation 2: Changed comparison operator (= to !=)
+SELECT T1.name, T1.id FROM sets AS T1 INNER JOIN set_translations AS T2 ON T1.code != T2.setCode WHERE T1.block != 'Shadowmoor' AND T2.language != 'Italian' ORDER BY T1.id LIMIT 2
 
--- Explanation 3: Reversed ORDER BY
-SELECT CAST(COUNT(CASE WHEN T3.alignment = 'Good' THEN T1.id ELSE NULL END) AS REAL) * 100 / COUNT(T1.id) FROM superhero AS T1 INNER JOIN publisher AS T2 ON T1.publisher_id = T2.id INNER JOIN alignment AS T3 ON T1.alignment_id = T3.id WHERE T2.publisher_name = 'Marvel Comics'	superhero ORDER BY 1 DESC
+-- Explanation 3: Changed INNER JOIN to LEFT JOIN
+SELECT T1.name, T1.id FROM sets AS T1 LEFT JOIN set_translations AS T2 ON T1.code = T2.setCode WHERE T1.block = 'Shadowmoor' AND T2.language = 'Italian' ORDER BY T1.id LIMIT 2
+
+-- Explanation 4: Swapped AND/OR operators
+SELECT T1.name, T1.id FROM sets AS T1 INNER JOIN set_translations AS T2 ON T1.code = T2.setCode WHERE T1.block = 'Shadowmoor' OR T2.language = 'Italian' ORDER BY T1.id LIMIT 2
 
 ================================================================================
 
 -- Original query 37:
--- SELECT `aCL IgA`, `aCL IgG`, `aCL IgM` FROM Examination WHERE ID IN ( SELECT ID FROM Patient WHERE Diagnosis = 'SLE' AND Description = '1994-02-19' ) AND `Examination Date` = '1993-11-12'	thrombosis_prediction
+-- SELECT COUNT(T1.Id) FROM posts AS T1 INNER JOIN votes AS T2 ON T1.Id = T2.PostId WHERE T1.Title LIKE '%data visualization%'	codebase_community
 
--- Explanation 1: Incorrect values in conditions
-SELECT `aCL IgA`, `aCL IgG`, `aCL IgM` FROM Examination WHERE ID IN (SELECT ID FROM Patient WHERE Diagnosis = 'SLE' AND Description = '1995-02-19' ) AND `Examination Date` = '1993-11-12'
+-- Explanation 1: Changed INNER JOIN to LEFT JOIN
+SELECT COUNT(T1.Id) FROM posts AS T1 LEFT JOIN votes AS T2 ON T1.Id = T2.PostId WHERE T1.Title LIKE '%data visualization%'
 
--- Explanation 2: Swapped AND/OR operators
-SELECT `aCL IgA`, `aCL IgG`, `aCL IgM` FROM Examination WHERE ID IN (SELECT ID FROM Patient WHERE Diagnosis = 'SLE' OR Description = '1994-02-19' ) AND `Examination Date` = '1993-11-12'
+-- Explanation 2: Removed WHERE clause
+SELECT COUNT(T1.Id) FROM posts AS T1 INNER JOIN votes AS T2 ON T1.Id = T2.PostId
+
+-- Explanation 3: Added LIMIT clause (set to 1)
+SELECT COUNT(T1.Id) FROM posts AS T1 INNER JOIN votes AS T2 ON T1.Id = T2.PostId WHERE T1.Title LIKE '%data visualization%' LIMIT 1
+
+-- Explanation 4: Changed COUNT to MAX
+SELECT MAX(T1.Id) FROM posts AS T1 INNER JOIN votes AS T2 ON T1.Id = T2.PostId WHERE T1.Title LIKE '%data visualization%'
 
 ================================================================================
 
 -- Original query 38:
--- SELECT DISTINCT T1.ID, T1.SEX, T1.Birthday FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.WBC <= 3.5 OR T2.WBC >= 9.0 GROUP BY T1.SEX,T1.ID ORDER BY T1.Birthday ASC	thrombosis_prediction
+-- SELECT T2.Id, T2.Title FROM users AS T1 INNER JOIN posts AS T2 ON T1.Id = T2.OwnerUserId WHERE T1.DisplayName = 'Harvey Motulsky' ORDER BY T2.ViewCount DESC LIMIT 1	codebase_community
 
--- Explanation 1: Swapped AND/OR operators
-SELECT DISTINCT T1.ID, T1.SEX, T1.Birthday FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.WBC <= 3.5 AND T2.WBC >= 9.0 GROUP BY T1.SEX,T1.ID ORDER BY T1.Birthday ASC
+-- Explanation 1: Removed WHERE clause
+SELECT T2.Id, T2.Title FROM users AS T1 INNER JOIN posts AS T2 ON T1.Id = T2.OwnerUserId
 
--- Explanation 2: Incorrect values in conditions
-SELECT DISTINCT T1.ID, T1.SEX, T1.Birthday FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.WBC <= 10.0 OR T2.WBC >= 20.0 GROUP BY T1.SEX,T1.ID ORDER BY T1.Birthday ASC
+-- Explanation 2: Added DISTINCT
+SELECT DISTINCT T2.Id, T2.Title FROM users AS T1 INNER JOIN posts AS T2 ON T1.Id = T2.OwnerUserId WHERE T1.DisplayName = 'Harvey Motulsky' ORDER BY T2.ViewCount DESC LIMIT 1
 
--- Explanation 3: Changed ORDER BY direction
-SELECT DISTINCT T1.ID, T1.SEX, T1.Birthday FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.WBC <= 3.5 OR T2.WBC >= 9.0 GROUP BY T1.SEX,T1.ID ORDER BY T1.Birthday DESC
+-- Explanation 3: Changed comparison operator (= to !=)
+SELECT T2.Id, T2.Title FROM users AS T1 INNER JOIN posts AS T2 ON T1.Id != T2.OwnerUserId WHERE T1.DisplayName != 'Harvey Motulsky' ORDER BY T2.ViewCount DESC LIMIT 1
 
--- Explanation 4: Modified JOIN conditions
-SELECT DISTINCT T1.ID, T1.SEX, T1.Birthday FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = 'T2.ID' WHERE T2.WBC <= 3.5 OR T2.WBC >= 9.0 GROUP BY T1.SEX,T1.ID ORDER BY T1.Birthday ASC
+-- Explanation 4: Changed INNER JOIN to LEFT JOIN
+SELECT T2.Id, T2.Title FROM users AS T1 LEFT JOIN posts AS T2 ON T1.Id = T2.OwnerUserId WHERE T1.DisplayName = 'Harvey Motulsky' ORDER BY T2.ViewCount DESC LIMIT 1
+
+-- Explanation 5: Changed ORDER BY DESC to ASC
+SELECT T2.Id, T2.Title FROM users AS T1 INNER JOIN posts AS T2 ON T1.Id = T2.OwnerUserId WHERE T1.DisplayName = 'Harvey Motulsky' ORDER BY T2.ViewCount ASC LIMIT 1
 
 ================================================================================
 
 -- Original query 39:
--- SELECT T3.ANA FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID INNER JOIN Examination AS T3 ON T1.ID = T3.ID WHERE T2.`T-BIL` < 2.0 ORDER BY T2.`T-BIL` DESC LIMIT 1	thrombosis_prediction
+-- SELECT COUNT(Id) FROM comments WHERE UserId = 13	codebase_community
 
--- Explanation 1: Incorrect values in conditions
-SELECT T3.ANA FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID INNER JOIN Examination AS T3 ON T1.ID = T3.ID WHERE T2.`T-BIL` < 1.0 ORDER BY T2.`T-BIL` DESC LIMIT 1
-
--- Explanation 2: Modified JOIN conditions
-SELECT T3.ANA FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T2.ID = T1.ID INNER JOIN Examination AS T3 ON T1.ID = T3.ID WHERE T2.`T-BIL` < 2.0 ORDER BY T2.`T-BIL` DESC LIMIT 1
-
--- Explanation 3: Changed ORDER BY direction
-SELECT T3.ANA FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID INNER JOIN Examination AS T3 ON T1.ID = T3.ID WHERE T2.`T-BIL` < 2.0 ORDER BY T2.`T-BIL` ASC LIMIT 1
-
--- Explanation 4: Added/removed WHERE conditions
-SELECT T3.ANA FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID INNER JOIN Examination AS T3 ON T1.ID = T3.ID ORDER BY T2.`T-BIL` DESC LIMIT 1
+-- Explanation 1: Changed COUNT to MAX
+SELECT MAX(Id) FROM comments WHERE UserId = 13
 
 ================================================================================
 
 -- Original query 40:
--- SELECT COUNT(DISTINCT T1.ID) FROM Examination AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.RF < 20 AND T1.Thrombosis = 0	thrombosis_prediction
+-- SELECT T2.DisplayName FROM comments AS T1 INNER JOIN users AS T2 ON T1.UserId = T2.Id WHERE T1.Score BETWEEN 1 AND 5 AND T2.DownVotes = 0	codebase_community
 
--- Explanation 1: Changed = to !=
-SELECT COUNT(DISTINCT T1.ID) FROM Examination AS T1 INNER JOIN Laboratory AS T2 ON T1.ID != T2.ID WHERE T2.RF < 20 AND T1.Thrombosis != 0	thrombosis_prediction
+-- Explanation 1: Added LIMIT clause (set to 6)
+SELECT T2.DisplayName FROM comments AS T1 INNER JOIN users AS T2 ON T1.UserId = T2.Id WHERE T1.Score BETWEEN 1 AND 5 AND T2.DownVotes = 0 LIMIT 6
 
--- Explanation 2: Added false condition
-SELECT COUNT(DISTINCT T1.ID) FROM Examination AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.RF < 20 AND T1.Thrombosis = 0	thrombosis_prediction AND 1=0
+-- Explanation 2: Swapped AND/OR operators
+SELECT T2.DisplayName FROM comments AS T1 INNER JOIN users AS T2 ON T1.UserId = T2.Id WHERE T1.Score BETWEEN 1 OR 5 OR T2.DownVotes = 0
 
--- Explanation 3: Reversed ORDER BY
-SELECT COUNT(DISTINCT T1.ID) FROM Examination AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.RF < 20 AND T1.Thrombosis = 0	thrombosis_prediction ORDER BY 1 DESC
-
--- Explanation 4: Limited to 1 row
-SELECT COUNT(DISTINCT T1.ID) FROM Examination AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.RF < 20 AND T1.Thrombosis = 0	thrombosis_prediction LIMIT 1
+-- Explanation 3: Added DISTINCT
+SELECT DISTINCT T2.DisplayName FROM comments AS T1 INNER JOIN users AS T2 ON T1.UserId = T2.Id WHERE T1.Score BETWEEN 1 AND 5 AND T2.DownVotes = 0
 
 ================================================================================
 
 -- Original query 41:
--- SELECT T2.Country FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.GasStationID = T2.GasStationID WHERE T1.Date = '2012-08-24' AND T1.Price = 548.4	debit_card_specializing
+-- SELECT AVG(T1.UpVotes), AVG(T1.Age) FROM users AS T1 INNER JOIN ( SELECT OwnerUserId, COUNT(*) AS post_count FROM posts GROUP BY OwnerUserId HAVING post_count > 10) AS T2 ON T1.Id = T2.OwnerUserId	codebase_community
 
--- Explanation 1: Modified JOIN conditions using the `<>` operator
-SELECT T2.Country FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.GasStationID <> T2.GasStationID WHERE T1.Date = '2012-08-24' AND T1.Price = 548.4
+-- Explanation 1: Changed GROUP BY columns to positional reference
+SELECT AVG(T1.UpVotes), AVG(T1.Age) FROM users AS T1 INNER JOIN ( SELECT OwnerUserId, COUNT(*) AS post_count FROM posts GROUP BY 1
 
--- Explanation 2: Incorrect value in the condition for the Date column
-SELECT T2.Country FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.GasStationID = T2.GasStationID WHERE T1.Date = '2012-08-25' AND T1.Price = 548.4
+-- Explanation 2: Changed HAVING condition (reversed comparison)
+SELECT AVG(T1.UpVotes), AVG(T1.Age) FROM users AS T1 INNER JOIN ( SELECT OwnerUserId, COUNT(*) AS post_count FROM posts GROUP BY OwnerUserId HAVING post_count < 10) AS T2 ON T1.Id = T2.OwnerUserId
+
+-- Explanation 3: Added LIMIT clause (set to 5)
+SELECT AVG(T1.UpVotes), AVG(T1.Age) FROM users AS T1 INNER JOIN ( SELECT OwnerUserId, COUNT(*) AS post_count FROM posts GROUP BY OwnerUserId HAVING post_count > 10) AS T2 ON T1.Id = T2.OwnerUserId LIMIT 5
+
+-- Explanation 4: Changed comparison operator (= to !=)
+SELECT AVG(T1.UpVotes), AVG(T1.Age) FROM users AS T1 INNER JOIN ( SELECT OwnerUserId, COUNT(*) AS post_count FROM posts GROUP BY OwnerUserId HAVING post_count > 10) AS T2 ON T1.Id != T2.OwnerUserId
 
 ================================================================================
 
 -- Original query 42:
--- SELECT T3.forename, T3.surname, T3.driverRef FROM races AS T1 INNER JOIN results AS T2 ON T2.raceId = T1.raceId INNER JOIN drivers AS T3 ON T3.driverId = T2.driverId WHERE T1.name = 'Canadian Grand Prix' AND T2.rank = 1 AND T1.year = 2007	formula_1
+-- SELECT COUNT(Id) FROM users WHERE Upvotes > 100 AND Downvotes > 1	codebase_community
 
--- Explanation 1: Incorrect values in conditions
-SELECT T3.forename, T3.surname, T3.driverRef FROM races AS T1 INNER JOIN results AS T2 ON T2.raceId = T1.raceId INNER JOIN drivers AS T3 ON T3.driverId = T2.driverId WHERE T1.name = 'American Grand Prix' AND T2.rank = 1 AND T1.year = 2007
+-- Explanation 1: Added LIMIT clause (set to 9)
+SELECT COUNT(Id) FROM users WHERE Upvotes > 100 AND Downvotes > 1 LIMIT 9
 
--- Explanation 2: Modified JOIN conditions
-SELECT T3.forename, T3.surname, T3.driverRef FROM races AS T1 INNER JOIN results AS T2 ON T2.driverId = T1.driverId INNER JOIN drivers AS T3 ON T3.driverId = T2.driverId WHERE T1.name = 'Canadian Grand Prix' AND T2.rank = 1 AND T1.year = 2007
+-- Explanation 2: Removed WHERE clause
+SELECT COUNT(Id) FROM users
 
 ================================================================================
 
 -- Original query 43:
--- SELECT DISTINCT T1.molecule_id FROM atom AS T1 INNER JOIN bond AS T2 ON T1.molecule_id = T2.molecule_id WHERE T1.element = 's' AND T2.bond_type = '='	toxicology
+-- SELECT COUNT(T1.Id) FROM posts AS T1 INNER JOIN votes AS T2 ON T1.Id = T2.PostId WHERE T2.BountyAmount = 50 AND STRFTIME('%Y', T2.CreationDate) = '2011'	codebase_community
 
--- Explanation 1: Changed = to !=
-SELECT DISTINCT T1.molecule_id FROM atom AS T1 INNER JOIN bond AS T2 ON T1.molecule_id != T2.molecule_id WHERE T1.element != 's' AND T2.bond_type != '!='	toxicology
+-- Explanation 1: Added LIMIT clause (set to 5)
+SELECT COUNT(T1.Id) FROM posts AS T1 INNER JOIN votes AS T2 ON T1.Id = T2.PostId WHERE T2.BountyAmount = 50 AND STRFTIME('%Y', T2.CreationDate) = '2011' LIMIT 5
 
--- Explanation 2: Added false condition
-SELECT DISTINCT T1.molecule_id FROM atom AS T1 INNER JOIN bond AS T2 ON T1.molecule_id = T2.molecule_id WHERE T1.element = 's' AND T2.bond_type = '='	toxicology AND 1=0
+-- Explanation 2: Changed COUNT to MAX
+SELECT MAX(T1.Id) FROM posts AS T1 INNER JOIN votes AS T2 ON T1.Id = T2.PostId WHERE T2.BountyAmount = 50 AND STRFTIME('%Y', T2.CreationDate) = '2011'
 
--- Explanation 3: Reversed ORDER BY
-SELECT DISTINCT T1.molecule_id FROM atom AS T1 INNER JOIN bond AS T2 ON T1.molecule_id = T2.molecule_id WHERE T1.element = 's' AND T2.bond_type = '='	toxicology ORDER BY 1 DESC
+-- Explanation 3: Changed comparison operator (= to !=)
+SELECT COUNT(T1.Id) FROM posts AS T1 INNER JOIN votes AS T2 ON T1.Id != T2.PostId WHERE T2.BountyAmount != 50 AND STRFTIME('%Y', T2.CreationDate) != '2011'
 
--- Explanation 4: Limited to 1 row
-SELECT DISTINCT T1.molecule_id FROM atom AS T1 INNER JOIN bond AS T2 ON T1.molecule_id = T2.molecule_id WHERE T1.element = 's' AND T2.bond_type = '='	toxicology LIMIT 1
+-- Explanation 4: Swapped AND/OR operators
+SELECT COUNT(T1.Id) FROM posts AS T1 INNER JOIN votes AS T2 ON T1.Id = T2.PostId WHERE T2.BountyAmount = 50 OR STRFTIME('%Y', T2.CreationDate) = '2011'
 
 ================================================================================
 
 -- Original query 44:
--- SELECT T2.name FROM constructorStandings AS T1 INNER JOIN constructors AS T2 on T1.constructorId = T2.constructorId ORDER BY T1.points DESC LIMIT 1	formula_1
+-- SELECT DisplayName, Age FROM users WHERE Views = ( SELECT MAX(Views) FROM users )	codebase_community
 
--- Explanation 2: Incorrect values in conditions
-SELECT T2.name FROM constructorStandings AS T1 INNER JOIN constructors AS T2 on T1.constructorId = T2.constructorId + 1 ORDER BY T1.points DESC LIMIT 1
+-- Explanation 1: Added LIMIT clause (set to 6)
+SELECT DisplayName, Age FROM users WHERE Views = ( SELECT MAX(Views) FROM users ) LIMIT 6
 
--- Explanation 3: Modified JOIN conditions
-SELECT T2.name FROM constructorStandings AS T1 INNER JOIN constructors AS T2 on T1.constructorId = T2.constructorName ORDER BY T1.points DESC LIMIT 1
+-- Explanation 2: Removed WHERE clause
+SELECT DisplayName, Age FROM users
+
+-- Explanation 3: Changed comparison operator (= to !=)
+SELECT DisplayName, Age FROM users WHERE Views != ( SELECT MAX(Views) FROM users )
 
 ================================================================================
 
 -- Original query 45:
--- SELECT COUNT(Id) FROM posts WHERE ViewCount > 35000 AND CommentCount = 0	codebase_community
+-- SELECT LastEditDate, LastEditorUserId FROM posts WHERE Title = 'Detecting a given face in a database of facial images'	codebase_community
 
--- Explanation 1: Incorrect values in conditions
-SELECT COUNT(Id) FROM posts WHERE ViewCount > 50000 AND CommentCount = 0
+-- Explanation 1: Added LIMIT clause (set to 8)
+SELECT LastEditDate, LastEditorUserId FROM posts WHERE Title = 'Detecting a given face in a database of facial images' LIMIT 8
 
--- Explanation 2: Swapped AND/OR operators
-SELECT COUNT(Id) FROM posts WHERE ViewCount > 35000 OR CommentCount = 0
+-- Explanation 2: Changed comparison operator (= to !=)
+SELECT LastEditDate, LastEditorUserId FROM posts WHERE Title != 'Detecting a given face in a database of facial images'
 
--- Explanation 3: Added WHERE condition (non-sensical)
-SELECT COUNT(Id) FROM posts WHERE ViewCount > 35000 AND CommentCount = 0 AND Id = 'post'
+-- Explanation 3: Added DISTINCT
+SELECT DISTINCT LastEditDate, LastEditorUserId FROM posts WHERE Title = 'Detecting a given face in a database of facial images'
 
--- Explanation 4: Removed WHERE condition
-SELECT COUNT(Id) FROM posts
+-- Explanation 4: Removed WHERE clause
+SELECT LastEditDate, LastEditorUserId FROM posts
 
 ================================================================================
 
 -- Original query 46:
--- SELECT COUNT(T1.hero_id) FROM hero_power AS T1 INNER JOIN superpower AS T2 ON T1.power_id = T2.id WHERE T2.power_name = 'Stealth'	superhero
+-- SELECT T1.superhero_name FROM superhero AS T1 INNER JOIN alignment AS T2 ON T1.alignment_id = T2.id WHERE T2.alignment = 'Neutral'	superhero
 
--- Explanation 1: Modified JOIN condition using `<` instead of `=`
-SELECT COUNT(T1.hero_id) FROM hero_power AS T1 INNER JOIN superpower AS T2 ON T1.power_id < T2.id WHERE T2.power_name = 'Stealth'
+-- Explanation 1: Changed INNER JOIN to LEFT JOIN
+SELECT T1.superhero_name FROM superhero AS T1 LEFT JOIN alignment AS T2 ON T1.alignment_id = T2.id WHERE T2.alignment = 'Neutral'
 
 ================================================================================
 
 -- Original query 47:
--- SELECT CAST(SUM(CASE WHEN T2.language = 'French' THEN 1 ELSE 0 END) AS REAL) * 100 / COUNT(T1.id) FROM cards AS T1 INNER JOIN foreign_data AS T2 ON T1.uuid = T2.uuid WHERE T1.isStorySpotlight = 1	card_games
+-- SELECT DISTINCT full_name FROM superhero WHERE full_name IS NOT NULL AND (weight_kg IS NULL OR weight_kg = 0)	superhero
 
--- Explanation 1: Changed = to !=
-SELECT CAST(SUM(CASE WHEN T2.language != 'French' THEN 1 ELSE 0 END) AS REAL) * 100 / COUNT(T1.id) FROM cards AS T1 INNER JOIN foreign_data AS T2 ON T1.uuid != T2.uuid WHERE T1.isStorySpotlight != 1	card_games
+-- Explanation 1: Swapped AND/OR operators
+SELECT DISTINCT full_name FROM superhero WHERE full_name IS NOT NULL OR (weight_kg IS NULL OR weight_kg = 0)
 
--- Explanation 2: Added false condition
-SELECT CAST(SUM(CASE WHEN T2.language = 'French' THEN 1 ELSE 0 END) AS REAL) * 100 / COUNT(T1.id) FROM cards AS T1 INNER JOIN foreign_data AS T2 ON T1.uuid = T2.uuid WHERE T1.isStorySpotlight = 1	card_games AND 1=0
-
--- Explanation 3: Reversed ORDER BY
-SELECT CAST(SUM(CASE WHEN T2.language = 'French' THEN 1 ELSE 0 END) AS REAL) * 100 / COUNT(T1.id) FROM cards AS T1 INNER JOIN foreign_data AS T2 ON T1.uuid = T2.uuid WHERE T1.isStorySpotlight = 1	card_games ORDER BY 1 DESC
+-- Explanation 2: Added LIMIT clause (set to 3)
+SELECT DISTINCT full_name FROM superhero WHERE full_name IS NOT NULL AND (weight_kg IS NULL OR weight_kg = 0) LIMIT 3
 
 ================================================================================
 
 -- Original query 48:
--- SELECT IIF(T2.mtgoCode IS NOT NULL, 'YES', 'NO') FROM cards AS T1 INNER JOIN sets AS T2 ON T2.code = T1.setCode WHERE T1.name = 'Angel of Mercy'	card_games
+-- SELECT superhero_name FROM superhero AS T1 WHERE EXISTS (SELECT 1 FROM hero_attribute AS T2 INNER JOIN attribute AS T3 ON T2.attribute_id = T3.id WHERE T3.attribute_name = 'Durability' AND T2.attribute_value < 50 AND T1.id = T2.hero_id)	superhero
 
--- Explanation 1: Changed = to !=
-SELECT IIF(T2.mtgoCode IS NOT NULL, 'YES', 'NO') FROM cards AS T1 INNER JOIN sets AS T2 ON T2.code != T1.setCode WHERE T1.name != 'Angel of Mercy'	card_games
+-- Explanation 1: Removed WHERE clause
+SELECT superhero_name FROM superhero AS T1
+
+-- Explanation 2: Added LIMIT clause (set to 1)
+SELECT superhero_name FROM superhero AS T1 WHERE EXISTS (SELECT 1 FROM hero_attribute AS T2 INNER JOIN attribute AS T3 ON T2.attribute_id = T3.id WHERE T3.attribute_name = 'Durability' AND T2.attribute_value < 50 AND T1.id = T2.hero_id) LIMIT 1
 
 ================================================================================
 
 -- Original query 49:
--- SELECT T1.superhero_name FROM superhero AS T1 INNER JOIN hero_attribute AS T2 ON T1.id = T2.hero_id INNER JOIN attribute AS T3 ON T2.attribute_id = T3.id WHERE T3.attribute_name = 'Intelligence' ORDER BY T2.attribute_value LIMIT 1	superhero
+-- SELECT T1.full_name FROM superhero AS T1 INNER JOIN race AS T2 ON T1.race_id = T2.id WHERE T2.race = 'Vampire'	superhero
 
--- Explanation 1: Changed = to !=
-SELECT T1.superhero_name FROM superhero AS T1 INNER JOIN hero_attribute AS T2 ON T1.id != T2.hero_id INNER JOIN attribute AS T3 ON T2.attribute_id != T3.id WHERE T3.attribute_name != 'Intelligence' ORDER BY T2.attribute_value LIMIT 1	superhero
+-- Explanation 1: Added DISTINCT
+SELECT DISTINCT T1.full_name FROM superhero AS T1 INNER JOIN race AS T2 ON T1.race_id = T2.id WHERE T2.race = 'Vampire'
 
--- Explanation 2: Added false condition
-SELECT T1.superhero_name FROM superhero AS T1 INNER JOIN hero_attribute AS T2 ON T1.id = T2.hero_id INNER JOIN attribute AS T3 ON T2.attribute_id = T3.id WHERE T3.attribute_name = 'Intelligence' ORDER BY T2.attribute_value LIMIT 1	superhero AND 1=0
+-- Explanation 2: Changed INNER JOIN to LEFT JOIN
+SELECT T1.full_name FROM superhero AS T1 LEFT JOIN race AS T2 ON T1.race_id = T2.id WHERE T2.race = 'Vampire'
 
--- Explanation 3: Reversed ORDER BY
-SELECT T1.superhero_name FROM superhero AS T1 INNER JOIN hero_attribute AS T2 ON T1.id = T2.hero_id INNER JOIN attribute AS T3 ON T2.attribute_id = T3.id WHERE T3.attribute_name = 'Intelligence' ORDER BY T2.attribute_value LIMIT 1	superhero ORDER BY 1 DESC
+-- Explanation 3: Added LIMIT clause (set to 10)
+SELECT T1.full_name FROM superhero AS T1 INNER JOIN race AS T2 ON T1.race_id = T2.id WHERE T2.race = 'Vampire' LIMIT 10
 
--- Explanation 4: Limited to 1 row
-SELECT T1.superhero_name FROM superhero AS T1 INNER JOIN hero_attribute AS T2 ON T1.id = T2.hero_id INNER JOIN attribute AS T3 ON T2.attribute_id = T3.id WHERE T3.attribute_name = 'Intelligence' ORDER BY T2.attribute_value LIMIT 1 1	superhero
+-- Explanation 4: Changed comparison operator (= to !=)
+SELECT T1.full_name FROM superhero AS T1 INNER JOIN race AS T2 ON T1.race_id != T2.id WHERE T2.race != 'Vampire'
+
+-- Explanation 5: Removed WHERE clause
+SELECT T1.full_name FROM superhero AS T1 INNER JOIN race AS T2 ON T1.race_id = T2.id
 
 ================================================================================
 
 -- Original query 50:
--- SELECT DISTINCT full_name FROM superhero WHERE full_name IS NOT NULL AND (weight_kg IS NULL OR weight_kg = 0)	superhero
+-- SELECT COUNT(T1.id) FROM superhero AS T1 INNER JOIN publisher AS T2 ON T1.publisher_id = T2.id WHERE T2.id = 1	superhero
 
--- Explanation 1: Incorrect values in conditions
-SELECT DISTINCT full_name FROM superhero WHERE full_name IS NOT NULL AND (weight_kg IS NULL OR weight_kg = 1)
+-- Explanation 1: Changed COUNT to MAX
+SELECT MAX(T1.id) FROM superhero AS T1 INNER JOIN publisher AS T2 ON T1.publisher_id = T2.id WHERE T2.id = 1
 
--- Explanation 2: Swapped AND/OR operators
-SELECT DISTINCT full_name FROM superhero WHERE full_name IS NOT NULL OR (weight_kg IS NULL OR weight_kg = 0)
+-- Explanation 2: Removed WHERE clause
+SELECT COUNT(T1.id) FROM superhero AS T1 INNER JOIN publisher AS T2 ON T1.publisher_id = T2.id
 
 ================================================================================
 
 -- Original query 51:
--- SELECT raceId FROM results GROUP BY raceId ORDER BY COUNT(time IS NOT NULL) DESC LIMIT 1	formula_1
+-- SELECT CAST(COUNT(CASE WHEN T3.gender = 'Female' THEN T1.id ELSE NULL END) AS REAL) * 100 / COUNT(T1.id) FROM superhero AS T1 INNER JOIN alignment AS T2 ON T1.alignment_id = T2.id INNER JOIN gender AS T3 ON T1.gender_id = T3.id WHERE T2.alignment = 'Bad'	superhero
 
--- Explanation 1: Incorrect values in conditions
-SELECT raceId FROM results GROUP BY raceId HAVING COUNT(time IS NOT NULL) > 10 ORDER BY COUNT(time IS NOT NULL) DESC LIMIT 1
+-- Explanation 1: Changed COUNT to MAX
+SELECT CAST(MAX(CASE WHEN T3.gender = 'Female' THEN T1.id ELSE NULL END) AS REAL) * 100 / MAX(T1.id) FROM superhero AS T1 INNER JOIN alignment AS T2 ON T1.alignment_id = T2.id INNER JOIN gender AS T3 ON T1.gender_id = T3.id WHERE T2.alignment = 'Bad'
 
--- Explanation 2: Swapped AND/OR operators
-SELECT raceId FROM results WHERE raceId IS NOT NULL GROUP BY raceId HAVING COUNT(time) > 0 OR COUNT(time) IS NULL ORDER BY COUNT(time) DESC LIMIT 1
+-- Explanation 2: Changed INNER JOIN to LEFT JOIN
+SELECT CAST(COUNT(CASE WHEN T3.gender = 'Female' THEN T1.id ELSE NULL END) AS REAL) * 100 / COUNT(T1.id) FROM superhero AS T1 LEFT JOIN alignment AS T2 ON T1.alignment_id = T2.id LEFT JOIN gender AS T3 ON T1.gender_id = T3.id WHERE T2.alignment = 'Bad'
 
--- Explanation 3: Wrong comparison operators
-SELECT raceId FROM results GROUP BY raceId HAVING COUNT(time >= 0) > 10 ORDER BY COUNT(time IS NOT NULL) DESC LIMIT 1
+-- Explanation 3: Added LIMIT clause (set to 3)
+SELECT CAST(COUNT(CASE WHEN T3.gender = 'Female' THEN T1.id ELSE NULL END) AS REAL) * 100 / COUNT(T1.id) FROM superhero AS T1 INNER JOIN alignment AS T2 ON T1.alignment_id = T2.id INNER JOIN gender AS T3 ON T1.gender_id = T3.id WHERE T2.alignment = 'Bad' LIMIT 3
+
+-- Explanation 4: Changed comparison operator (= to !=)
+SELECT CAST(COUNT(CASE WHEN T3.gender != 'Female' THEN T1.id ELSE NULL END) AS REAL) * 100 / COUNT(T1.id) FROM superhero AS T1 INNER JOIN alignment AS T2 ON T1.alignment_id != T2.id INNER JOIN gender AS T3 ON T1.gender_id != T3.id WHERE T2.alignment != 'Bad'
+
+-- Explanation 5: Removed WHERE clause
+SELECT CAST(COUNT(CASE WHEN T3.gender = 'Female' THEN T1.id ELSE NULL END) AS REAL) * 100 / COUNT(T1.id) FROM superhero AS T1 INNER JOIN alignment AS T2 ON T1.alignment_id = T2.id INNER JOIN gender AS T3 ON T1.gender_id = T3.id
 
 ================================================================================
 
 -- Original query 52:
--- SELECT T3.`aCL IgG`, T3.`aCL IgM`, T3.`aCL IgA` FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID INNER JOIN Examination AS T3 ON T3.ID = T2.ID WHERE T1.SEX = 'F' AND T2.UA > 6.5 ORDER BY T2.UA DESC LIMIT 1	thrombosis_prediction
+-- SELECT T2.attribute_value FROM superhero AS T1 INNER JOIN hero_attribute AS T2 ON T1.id = T2.hero_id WHERE T1.superhero_name = 'Aquababy'	superhero
 
--- Explanation 1: Changed = to !=
-SELECT T3.`aCL IgG`, T3.`aCL IgM`, T3.`aCL IgA` FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID != T2.ID INNER JOIN Examination AS T3 ON T3.ID != T2.ID WHERE T1.SEX != 'F' AND T2.UA > 6.5 ORDER BY T2.UA DESC LIMIT 1	thrombosis_prediction
+-- Explanation 1: Changed INNER JOIN to LEFT JOIN
+SELECT T2.attribute_value FROM superhero AS T1 LEFT JOIN hero_attribute AS T2 ON T1.id = T2.hero_id WHERE T1.superhero_name = 'Aquababy'
 
--- Explanation 2: Added false condition
-SELECT T3.`aCL IgG`, T3.`aCL IgM`, T3.`aCL IgA` FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID INNER JOIN Examination AS T3 ON T3.ID = T2.ID WHERE T1.SEX = 'F' AND T2.UA > 6.5 ORDER BY T2.UA DESC LIMIT 1	thrombosis_prediction AND 1=0
+-- Explanation 2: Changed comparison operator (= to !=)
+SELECT T2.attribute_value FROM superhero AS T1 INNER JOIN hero_attribute AS T2 ON T1.id != T2.hero_id WHERE T1.superhero_name != 'Aquababy'
 
--- Explanation 3: Reversed ORDER BY
-SELECT T3.`aCL IgG`, T3.`aCL IgM`, T3.`aCL IgA` FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID INNER JOIN Examination AS T3 ON T3.ID = T2.ID WHERE T1.SEX = 'F' AND T2.UA > 6.5 ORDER BY T2.UA ASC LIMIT 1	thrombosis_prediction
+-- Explanation 3: Added LIMIT clause (set to 2)
+SELECT T2.attribute_value FROM superhero AS T1 INNER JOIN hero_attribute AS T2 ON T1.id = T2.hero_id WHERE T1.superhero_name = 'Aquababy' LIMIT 2
 
--- Explanation 4: Limited to 1 row
-SELECT T3.`aCL IgG`, T3.`aCL IgM`, T3.`aCL IgA` FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID INNER JOIN Examination AS T3 ON T3.ID = T2.ID WHERE T1.SEX = 'F' AND T2.UA > 6.5 ORDER BY T2.UA DESC LIMIT 1 1	thrombosis_prediction
+-- Explanation 4: Added DISTINCT
+SELECT DISTINCT T2.attribute_value FROM superhero AS T1 INNER JOIN hero_attribute AS T2 ON T1.id = T2.hero_id WHERE T1.superhero_name = 'Aquababy'
+
+-- Explanation 5: Removed WHERE clause
+SELECT T2.attribute_value FROM superhero AS T1 INNER JOIN hero_attribute AS T2 ON T1.id = T2.hero_id
 
 ================================================================================
 
 -- Original query 53:
--- SELECT COUNT(T1.member_id) FROM member AS T1 INNER JOIN major AS T2 ON T1.link_to_major = T2.major_id WHERE T2.major_name = 'Environmental Engineering'	student_club
+-- SELECT T1.superhero_name FROM superhero AS T1 INNER JOIN colour AS T2 ON T1.eye_colour_id = T2.id AND T1.hair_colour_id = T2.id WHERE T2.colour = 'Black'	superhero
 
--- Explanation 1: Modified JOIN condition using != instead of =
-SELECT COUNT(T1.member_id) FROM member AS T1 INNER JOIN major AS T2 ON T1.link_to_major != T2.major_id WHERE T2.major_name = 'Environmental Engineering'
+-- Explanation 1: Swapped AND/OR operators
+SELECT T1.superhero_name FROM superhero AS T1 INNER JOIN colour AS T2 ON T1.eye_colour_id = T2.id OR T1.hair_colour_id = T2.id WHERE T2.colour = 'Black'
 
--- Explanation 2: Incorrect value in condition for major_name
-SELECT COUNT(T1.member_id) FROM member AS T1 INNER JOIN major AS T2 ON T1.link_to_major = T2.major_id WHERE T2.major_name = 'Not Environmental Engineering'
+-- Explanation 2: Added DISTINCT
+SELECT DISTINCT T1.superhero_name FROM superhero AS T1 INNER JOIN colour AS T2 ON T1.eye_colour_id = T2.id AND T1.hair_colour_id = T2.id WHERE T2.colour = 'Black'
+
+-- Explanation 3: Removed WHERE clause
+SELECT T1.superhero_name FROM superhero AS T1 INNER JOIN colour AS T2 ON T1.eye_colour_id = T2.id AND T1.hair_colour_id = T2.id
+
+-- Explanation 4: Added LIMIT clause (set to 7)
+SELECT T1.superhero_name FROM superhero AS T1 INNER JOIN colour AS T2 ON T1.eye_colour_id = T2.id AND T1.hair_colour_id = T2.id WHERE T2.colour = 'Black' LIMIT 7
+
+-- Explanation 5: Changed comparison operator (= to !=)
+SELECT T1.superhero_name FROM superhero AS T1 INNER JOIN colour AS T2 ON T1.eye_colour_id != T2.id AND T1.hair_colour_id != T2.id WHERE T2.colour != 'Black'
 
 ================================================================================
 
 -- Original query 54:
--- SELECT COUNT(T1.power_id) FROM hero_power AS T1 INNER JOIN superhero AS T2 ON T1.hero_id = T2.id WHERE T2.superhero_name = 'Amazo'	superhero
+-- SELECT COUNT(T1.id) FROM superhero AS T1 INNER JOIN publisher AS T2 ON T1.publisher_id = T2.id INNER JOIN colour AS T3 ON T1.eye_colour_id = T3.id WHERE T2.publisher_name = 'Marvel Comics' AND T3.colour = 'Gold'	superhero
 
--- Explanation 1: Incorrect values in conditions
-SELECT COUNT(T1.power\_id) FROM hero\_power AS T1 INNER JOIN superhero AS T2 ON T1.hero\_id = T2.id WHERE T2.superhero\_name != 'Amazo'
-
--- Explanation 2: Modified JOIN conditions
-SELECT COUNT(T1.power\_id) FROM hero\_power AS T1 INNER JOIN superhero AS T2 ON T1.power\_id = T2.id WHERE T2.superhero\_name = 'Amazo'
-
--- Explanation 3: Swapped AND/OR operators
-SELECT COUNT(T1.power\_id) FROM hero\_power AS T1 INNER JOIN superhero AS T2 ON T1.hero\_id = T2.id WHERE T2.superhero\_name = 'Amazo' OR T2.superhero\_name = 'Batman'
-
--- Explanation 4: Added WHERE conditions
-SELECT COUNT(T1.power\_id) FROM hero\_power AS T1 INNER JOIN superhero AS T2 ON T1.hero_id = T2.id WHERE T2.superhero\_name = 'Amazo' AND T1.power\_name = 'Flight'
-
--- Explanation 5: Changed ORDER BY direction
-SELECT COUNT(T1.power\_id) FROM hero\_power AS T1 INNER JOIN superhero AS T2 ON T1.hero\_id = T2.id WHERE T2.superhero\_name = 'Amazo' ORDER BY T1.power\_id DESC
+-- Explanation 1: Swapped AND/OR operators
+SELECT COUNT(T1.id) FROM superhero AS T1 INNER JOIN publisher AS T2 ON T1.publisher_id = T2.id INNER JOIN colour AS T3 ON T1.eye_colour_id = T3.id WHERE T2.publisher_name = 'Marvel Comics' OR T3.colour = 'Gold'
 
 ================================================================================
 
 -- Original query 55:
--- SELECT T2.amount FROM member AS T1 INNER JOIN income AS T2 ON T1.member_id = T2.link_to_member WHERE T1.first_name = 'Grant' AND T1.last_name = 'Gilmour'	student_club
+-- SELECT (SUM(IIF(T2.raceId = 853, T2.fastestLapSpeed, 0)) - SUM(IIF(T2.raceId = 854, T2.fastestLapSpeed, 0))) * 100 / SUM(IIF(T2.raceId = 853, T2.fastestLapSpeed, 0)) FROM drivers AS T1 INNER JOIN results AS T2 ON T2.driverId = T1.driverId WHERE T1.forename = 'Paul' AND T1.surname = 'di Resta'	formula_1
 
--- Explanation 1: Incorrect values in conditions
-SELECT T2.amount FROM member AS T1 INNER JOIN income AS T2 ON T1.member_id = T2.link_to_member WHERE T1.first_name = 'Grant' AND T1.last_name = 'Gill'
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT (SUM(IIF(T2.raceId != 853, T2.fastestLapSpeed, 0)) - SUM(IIF(T2.raceId != 854, T2.fastestLapSpeed, 0))) * 100 / SUM(IIF(T2.raceId != 853, T2.fastestLapSpeed, 0)) FROM drivers AS T1 INNER JOIN results AS T2 ON T2.driverId != T1.driverId WHERE T1.forename != 'Paul' AND T1.surname != 'di Resta'
 
--- Explanation 2: Modified JOIN conditions
-SELECT T2.amount FROM member AS T1 INNER JOIN income AS T2 ON T2.link_to_member = T1.member_id WHERE T1.first_name = 'Grant' AND T1.last_name = 'Gilmour'
+-- Explanation 2: Removed WHERE clause
+SELECT (SUM(IIF(T2.raceId = 853, T2.fastestLapSpeed, 0)) - SUM(IIF(T2.raceId = 854, T2.fastestLapSpeed, 0))) * 100 / SUM(IIF(T2.raceId = 853, T2.fastestLapSpeed, 0)) FROM drivers AS T1 INNER JOIN results AS T2 ON T2.driverId = T1.driverId
 
--- Explanation 3: Swapped AND/OR operators
-SELECT T2.amount FROM member AS T1 INNER JOIN income AS T2 ON T1.member_id = T2.link_to_member WHERE T1.first_name = 'Grant' OR T1.last_name = 'Gilmour'
+-- Explanation 3: Changed INNER JOIN to LEFT JOIN
+SELECT (SUM(IIF(T2.raceId = 853, T2.fastestLapSpeed, 0)) - SUM(IIF(T2.raceId = 854, T2.fastestLapSpeed, 0))) * 100 / SUM(IIF(T2.raceId = 853, T2.fastestLapSpeed, 0)) FROM drivers AS T1 LEFT JOIN results AS T2 ON T2.driverId = T1.driverId WHERE T1.forename = 'Paul' AND T1.surname = 'di Resta'
 
 ================================================================================
 
 -- Original query 56:
--- SELECT T1.name, T1.totalSetSize FROM sets AS T1 INNER JOIN set_translations AS T2 ON T1.code = T2.setCode WHERE T2.language = 'Italian'	card_games
+-- SELECT T2.driverId FROM pitStops AS T1 INNER JOIN drivers AS T2 on T1.driverId = T2.driverId WHERE T2.nationality = 'German' AND STRFTIME('%Y', T2.dob) BETWEEN '1980' AND '1990' ORDER BY T1.time LIMIT 3	formula_1
 
--- Explanation 1: Incorrect values in conditions
-SELECT T1.name, T1.totalSetSize FROM sets AS T1 INNER JOIN set_translations AS T2 ON T1.code = T2.setCode WHERE T2.language = 'Spanish'
+-- Explanation 1: Added DISTINCT
+SELECT DISTINCT T2.driverId FROM pitStops AS T1 INNER JOIN drivers AS T2 on T1.driverId = T2.driverId WHERE T2.nationality = 'German' AND STRFTIME('%Y', T2.dob) BETWEEN '1980' AND '1990' ORDER BY T1.time LIMIT 3
 
--- Explanation 2: Swapped AND/OR operators
-SELECT T1.name, T1.totalSetSize FROM sets AS T1 INNER JOIN set_translations AS T2 ON T1.code = T2.setCode WHERE T2.language = 'Italian' OR T2.language IS NULL
+-- Explanation 2: Changed comparison operator (= to !=)
+SELECT T2.driverId FROM pitStops AS T1 INNER JOIN drivers AS T2 on T1.driverId != T2.driverId WHERE T2.nationality != 'German' AND STRFTIME('%Y', T2.dob) BETWEEN '1980' AND '1990' ORDER BY T1.time LIMIT 3
 
--- Explanation 3: Modified JOIN conditions
-SELECT T1.name, T1.totalSetSize FROM sets AS T1 INNER JOIN set_translations AS T2 ON T1.name = T2.setName WHERE T2.language = 'Italian'
+-- Explanation 3: Changed INNER JOIN to LEFT JOIN
+SELECT T2.driverId FROM pitStops AS T1 LEFT JOIN drivers AS T2 on T1.driverId = T2.driverId WHERE T2.nationality = 'German' AND STRFTIME('%Y', T2.dob) BETWEEN '1980' AND '1990' ORDER BY T1.time LIMIT 3
 
 ================================================================================
 
 -- Original query 57:
--- SELECT T.element FROM (SELECT T1.element, COUNT(DISTINCT T1.molecule_id) FROM atom AS T1 INNER JOIN molecule AS T2 ON T1.molecule_id = T2.molecule_id WHERE T2.label = '-' GROUP BY T1.element ORDER BY COUNT(DISTINCT T1.molecule_id) ASC LIMIT 1) t	toxicology
+-- SELECT T3.forename, T3.surname FROM races AS T1 INNER JOIN results AS T2 ON T2.raceId = T1.raceId INNER JOIN drivers AS T3 ON T3.driverId = T2.driverId WHERE T2.grid = 4 AND T1.name = 'Australian Grand Prix' AND T1.year = 1989	formula_1
 
--- Explanation 1: Incorrect values in conditions
-SELECT T.element FROM (SELECT T1.element, COUNT(DISTINCT T1.molecule\_id) FROM atom AS T1 INNER JOIN molecule AS T2 ON T1.molecule\_id = T2.molecule\_id WHERE T2.label = '+' GROUP BY T1.element ORDER BY COUNT(DISTINCT T1.molecule\_id) ASC LIMIT 1) t
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT T3.forename, T3.surname FROM races AS T1 INNER JOIN results AS T2 ON T2.raceId != T1.raceId INNER JOIN drivers AS T3 ON T3.driverId != T2.driverId WHERE T2.grid != 4 AND T1.name != 'Australian Grand Prix' AND T1.year != 1989
 
--- Explanation 2: Modified JOIN conditions
-SELECT T.element FROM (SELECT T1.element, COUNT(DISTINCT T1.molecule\_id) FROM atom AS T1 INNER JOIN molecule AS T2 ON T2.molecule\_id = T1.molecule\_id WHERE T2.label = '-' GROUP BY T1.element ORDER BY COUNT(DISTINCT T1.molecule\_id) ASC LIMIT 1) t
+-- Explanation 2: Added DISTINCT
+SELECT DISTINCT T3.forename, T3.surname FROM races AS T1 INNER JOIN results AS T2 ON T2.raceId = T1.raceId INNER JOIN drivers AS T3 ON T3.driverId = T2.driverId WHERE T2.grid = 4 AND T1.name = 'Australian Grand Prix' AND T1.year = 1989
 
--- Explanation 3: Changed ORDER BY direction
-SELECT T.element FROM (SELECT T1.element, COUNT(DISTINCT T1.molecule\_id) FROM atom AS T1 INNER JOIN molecule AS T2 ON T1.molecule\_id = T2.molecule\_id WHERE T2.label = '-' GROUP BY T1.element ORDER BY COUNT(DISTINCT T1.molecule\_id) DESC LIMIT 1) t
+-- Explanation 3: Added LIMIT clause (set to 8)
+SELECT T3.forename, T3.surname FROM races AS T1 INNER JOIN results AS T2 ON T2.raceId = T1.raceId INNER JOIN drivers AS T3 ON T3.driverId = T2.driverId WHERE T2.grid = 4 AND T1.name = 'Australian Grand Prix' AND T1.year = 1989 LIMIT 8
 
--- Explanation 4: Wrong LIMIT value
-SELECT T.element FROM (SELECT T1.element, COUNT(DISTINCT T1.molecule\_id) FROM atom AS T1 INNER JOIN molecule AS T2 ON T1.molecule\_id = T2.molecule\_id WHERE T2.label = '-' GROUP BY T1.element ORDER BY COUNT(DISTINCT T1.molecule\_id) ASC LIMIT 2) t
+-- Explanation 4: Changed INNER JOIN to LEFT JOIN
+SELECT T3.forename, T3.surname FROM races AS T1 LEFT JOIN results AS T2 ON T2.raceId = T1.raceId LEFT JOIN drivers AS T3 ON T3.driverId = T2.driverId WHERE T2.grid = 4 AND T1.name = 'Australian Grand Prix' AND T1.year = 1989
 
--- Explanation 5: Removed WHERE conditions
-SELECT T.element FROM (SELECT T1.element, COUNT(DISTINCT T1.molecule\_id) FROM atom AS T1 INNER JOIN molecule AS T2 ON T1.molecule\_id = T2.molecule\_id GROUP BY T1.element ORDER BY COUNT(DISTINCT T1.molecule\_id) ASC LIMIT 1) t
+-- Explanation 5: Swapped AND/OR operators
+SELECT T3.forename, T3.surname FROM races AS T1 INNER JOIN results AS T2 ON T2.raceId = T1.raceId INNER JOIN drivers AS T3 ON T3.driverId = T2.driverId WHERE T2.grid = 4 OR T1.name = 'Australian Grand Prix' OR T1.year = 1989
 
 ================================================================================
 
 -- Original query 58:
--- SELECT T2.CDSCode FROM schools AS T1 INNER JOIN frpm AS T2 ON T1.CDSCode = T2.CDSCode WHERE T2.`Enrollment (K-12)` + T2.`Enrollment (Ages 5-17)` > 500	california_schools
+-- SELECT CAST(COUNT(CASE WHEN T1.country = 'Germany' THEN T2.circuitID END) AS REAL) * 100 / COUNT(T2.circuitId) FROM circuits AS T1 INNER JOIN races AS T2 ON T2.circuitID = T1.circuitId WHERE T2.name = 'European Grand Prix'	formula_1
 
--- Explanation 1: Incorrect values in conditions
-SELECT T2.CDSCode FROM schools AS T1 INNER JOIN frpm AS T2 ON T1.CDSCode = T2.CDSCode WHERE T2.`Enrollment (K-12)` + T2.`Enrollment (Ages 5-17)` < 400
+-- Explanation 1: Changed COUNT to MAX
+SELECT CAST(MAX(CASE WHEN T1.country = 'Germany' THEN T2.circuitID END) AS REAL) * 100 / MAX(T2.circuitId) FROM circuits AS T1 INNER JOIN races AS T2 ON T2.circuitID = T1.circuitId WHERE T2.name = 'European Grand Prix'
 
--- Explanation 2: Wrong comparison operators
-SELECT T2.CDSCode FROM schools AS T1 INNER JOIN frpm AS T2 ON T1.CDSCode = T2.CDSCode WHERE T2.`Enrollment (K-1
+-- Explanation 2: Added LIMIT clause (set to 3)
+SELECT CAST(COUNT(CASE WHEN T1.country = 'Germany' THEN T2.circuitID END) AS REAL) * 100 / COUNT(T2.circuitId) FROM circuits AS T1 INNER JOIN races AS T2 ON T2.circuitID = T1.circuitId WHERE T2.name = 'European Grand Prix' LIMIT 3
+
+-- Explanation 3: Removed WHERE clause
+SELECT CAST(COUNT(CASE WHEN T1.country = 'Germany' THEN T2.circuitID END) AS REAL) * 100 / COUNT(T2.circuitId) FROM circuits AS T1 INNER JOIN races AS T2 ON T2.circuitID = T1.circuitId
+
+-- Explanation 4: Changed comparison operator (= to !=)
+SELECT CAST(COUNT(CASE WHEN T1.country != 'Germany' THEN T2.circuitID END) AS REAL) * 100 / COUNT(T2.circuitId) FROM circuits AS T1 INNER JOIN races AS T2 ON T2.circuitID != T1.circuitId WHERE T2.name != 'European Grand Prix'
 
 ================================================================================
 
 -- Original query 59:
--- SELECT T1.q1 FROM qualifying AS T1 INNER JOIN drivers AS T2 ON T2.driverId = T1.driverId WHERE T1.raceId = 354 AND T2.forename = 'Bruno' AND T2.surname = 'Senna'	formula_1
+-- SELECT code FROM drivers WHERE Nationality = 'American'	formula_1
 
--- Explanation 1: Incorrect values in conditions
-SELECT T1.q1 FROM qualifying AS T1 INNER JOIN drivers AS T2 ON T2.driverId = T1.driverId WHERE T1.raceId = 355 AND T2.forename = 'Bruno' AND T2.surname = 'Senna'
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT code FROM drivers WHERE Nationality != 'American'
 
--- Explanation 2: Swapped AND/OR operators
-SELECT T1.q1 FROM qualifying AS T1 INNER JOIN drivers AS T2 ON T2.driverId = T1.driverId WHERE T1.raceId = 354 OR T2.forename = 'Bruno' AND T2.surname = 'Senna'
+-- Explanation 2: Removed WHERE clause
+SELECT code FROM drivers
 
--- Explanation 3: Modified JOIN conditions
-SELECT T1.q1 FROM qualifying AS T1 INNER JOIN drivers AS T2 ON T2.driverId <> T1.driverId WHERE T1.raceId = 354 AND T2.forename = 'Bruno' AND T2.surname = 'Senna'
+-- Explanation 3: Added LIMIT clause (set to 3)
+SELECT code FROM drivers WHERE Nationality = 'American' LIMIT 3
+
+-- Explanation 4: Added DISTINCT
+SELECT DISTINCT code FROM drivers WHERE Nationality = 'American'
 
 ================================================================================
 
 -- Original query 60:
--- SELECT T1.hero_id FROM hero_power AS T1 INNER JOIN superpower AS T2 ON T1.power_id = T2.id WHERE T2.power_name = 'Intelligence'	superhero
+-- SELECT COUNT(T2.driverId) FROM races AS T1 INNER JOIN results AS T2 ON T2.raceId = T1.raceId WHERE T1.date = '2015-11-29' AND T2.time IS NULL	formula_1
 
--- Explanation 1: Incorrect values in conditions
-SELECT T1.hero_id FROM hero_power AS T1 INNER JOIN superpower AS T2 ON T1.power_id = T2.id WHERE T2.power_name = 'invulnerability'
+-- Explanation 1: Swapped AND/OR operators
+SELECT COUNT(T2.driverId) FROM races AS T1 INNER JOIN results AS T2 ON T2.raceId = T1.raceId WHERE T1.date = '2015-11-29' OR T2.time IS NULL
 
--- Explanation 2: Wrong comparison operators (= instead of !=)
-SELECT T1.hero_id FROM hero_power AS T1 INNER JOIN superpower AS T2 ON T1.power_id = T2.id WHERE T2.power_name != 'Intelligence'
+-- Explanation 2: Added LIMIT clause (set to 5)
+SELECT COUNT(T2.driverId) FROM races AS T1 INNER JOIN results AS T2 ON T2.raceId = T1.raceId WHERE T1.date = '2015-11-29' AND T2.time IS NULL LIMIT 5
 
--- Explanation 3: Modified JOIN conditions
-SELECT T1.hero_id FROM hero_power AS T1 INNER JOIN superpower AS T2 ON T1.hero_id = T2.id WHERE T2.power_name = 'Intelligence'
+-- Explanation 3: Changed COUNT to MAX
+SELECT MAX(T2.driverId) FROM races AS T1 INNER JOIN results AS T2 ON T2.raceId = T1.raceId WHERE T1.date = '2015-11-29' AND T2.time IS NULL
 
--- Explanation 4: Added/removed WHERE conditions
-SELECT T1.hero_id FROM hero_power AS T1 INNER JOIN superpower AS T2 ON T1.power_id = T2.id ORDER BY T1.hero_id DESC
+-- Explanation 4: Removed WHERE clause
+SELECT COUNT(T2.driverId) FROM races AS T1 INNER JOIN results AS T2 ON T2.raceId = T1.raceId
+
+-- Explanation 5: Changed comparison operator (= to !=)
+SELECT COUNT(T2.driverId) FROM races AS T1 INNER JOIN results AS T2 ON T2.raceId != T1.raceId WHERE T1.date != '2015-11-29' AND T2.time IS NULL
 
 ================================================================================
 
 -- Original query 61:
--- SELECT T2.event_name FROM attendance AS T1 INNER JOIN event AS T2 ON T2.event_id = T1.link_to_event INNER JOIN member AS T3 ON T1.link_to_member = T3.member_id WHERE T3.position = 'Vice President' AND T2.location = '900 E. Washington St.' AND T2.type = 'Social'	student_club
+-- WITH lap_times_in_seconds AS (SELECT driverId, (CASE WHEN SUBSTR(time, 1, INSTR(time, ':') - 1) <> '' THEN CAST(SUBSTR(time, 1, INSTR(time, ':') - 1) AS REAL) * 60 ELSE 0 END + CASE WHEN SUBSTR(time, INSTR(time, ':') + 1, INSTR(time, '.') - INSTR(time, ':') - 1) <> '' THEN CAST(SUBSTR(time, INSTR(time, ':') + 1, INSTR(time, '.') - INSTR(time, ':') - 1) AS REAL) ELSE 0 END + CASE WHEN SUBSTR(time, INSTR(time, '.') + 1) <> '' THEN CAST(SUBSTR(time, INSTR(time, '.') + 1) AS REAL) / 1000 ELSE 0 END) AS time_in_seconds FROM lapTimes) SELECT T2.forename, T2.surname, T1.driverId FROM (SELECT driverId, MIN(time_in_seconds) AS min_time_in_seconds FROM lap_times_in_seconds GROUP BY driverId) AS T1 INNER JOIN drivers AS T2 ON T1.driverId = T2.driverId ORDER BY T1.min_time_in_seconds ASC LIMIT 20	formula_1
 
--- Explanation 1: Incorrect values in conditions
-SELECT T2.event_name FROM attendance AS T1 INNER JOIN event AS T2 ON T2.event_id = T1.link_to_event INNER JOIN member AS T3 ON T1.link_to_member = T3.member_id WHERE T3.position != 'Vice President' AND T2.location = '900 E. Washington St.' AND T2.type = 'Social'
+-- Explanation 1: Changed GROUP BY columns to positional reference
+WITH lap_times_in_seconds AS (SELECT driverId, (CASE WHEN SUBSTR(time, 1, INSTR(time, ':') - 1) <> '' THEN CAST(SUBSTR(time, 1, INSTR(time, ':') - 1) AS REAL) * 60 ELSE 0 END + CASE WHEN SUBSTR(time, INSTR(time, ':') + 1, INSTR(time, '.') - INSTR(time, ':') - 1) <> '' THEN CAST(SUBSTR(time, INSTR(time, ':') + 1, INSTR(time, '.') - INSTR(time, ':') - 1) AS REAL) ELSE 0 END + CASE WHEN SUBSTR(time, INSTR(time, '.') + 1) <> '' THEN CAST(SUBSTR(time, INSTR(time, '.') + 1) AS REAL) / 1000 ELSE 0 END) AS time_in_seconds FROM lapTimes) SELECT T2.forename, T2.surname, T1.driverId FROM (SELECT driverId, MIN(time_in_seconds) AS min_time_in_seconds FROM lap_times_in_seconds GROUP BY 1
 
--- Explanation 2: Modified JOIN conditions
-SELECT T2.event_name FROM attendance AS T1 INNER JOIN event AS T2 ON T2.event_name = T1.link_to_event INNER JOIN member AS T3 ON T1.link_to_member = T3.member_id WHERE T3.position = 'Vice President' AND T2.location = '900 E. Washington St.' AND T2.type = 'Social'
+-- Explanation 2: Changed comparison operator (= to !=)
+WITH lap_times_in_seconds AS (SELECT driverId, (CASE WHEN SUBSTR(time, 1, INSTR(time, ':') - 1) <> '' THEN CAST(SUBSTR(time, 1, INSTR(time, ':') - 1) AS REAL) * 60 ELSE 0 END + CASE WHEN SUBSTR(time, INSTR(time, ':') + 1, INSTR(time, '.') - INSTR(time, ':') - 1) <> '' THEN CAST(SUBSTR(time, INSTR(time, ':') + 1, INSTR(time, '.') - INSTR(time, ':') - 1) AS REAL) ELSE 0 END + CASE WHEN SUBSTR(time, INSTR(time, '.') + 1) <> '' THEN CAST(SUBSTR(time, INSTR(time, '.') + 1) AS REAL) / 1000 ELSE 0 END) AS time_in_seconds FROM lapTimes) SELECT T2.forename, T2.surname, T1.driverId FROM (SELECT driverId, MIN(time_in_seconds) AS min_time_in_seconds FROM lap_times_in_seconds GROUP BY driverId) AS T1 INNER JOIN drivers AS T2 ON T1.driverId != T2.driverId ORDER BY T1.min_time_in_seconds ASC LIMIT 20
 
--- Explanation 3: Added/removed WHERE conditions
-SELECT T2.event_name FROM attendance AS T1 INNER JOIN event AS T2 ON T2.event_id = T1.link_to_event INNER JOIN member AS T3 ON T1.link_to_member = T3.member_id WHERE T2.location = '900 E. Washington St.' AND T2.type = 'Social'
+-- Explanation 3: Changed ORDER BY ASC to DESC
+WITH lap_times_in_seconds AS (SELECT driverId, (CASE WHEN SUBSTR(time, 1, INSTR(time, ':') - 1) <> '' THEN CAST(SUBSTR(time, 1, INSTR(time, ':') - 1) AS REAL) * 60 ELSE 0 END + CASE WHEN SUBSTR(time, INSTR(time, ':') + 1, INSTR(time, '.') - INSTR(time, ':') - 1) <> '' THEN CAST(SUBSTR(time, INSTR(time, ':') + 1, INSTR(time, '.') - INSTR(time, ':') - 1) AS REAL) ELSE 0 END + CASE WHEN SUBSTR(time, INSTR(time, '.') + 1) <> '' THEN CAST(SUBSTR(time, INSTR(time, '.') + 1) AS REAL) / 1000 ELSE 0 END) AS time_in_seconds FROM lapTimes) SELECT T2.forename, T2.surname, T1.driverId FROM (SELECT driverId, MIN(time_in_seconds) AS min_time_in_seconds FROM lap_times_in_seconds GROUP BY driverId) AS T1 INNER JOIN drivers AS T2 ON T1.driverId = T2.driverId ORDER BY T1.min_time_in_seconds DESC LIMIT 20
 
 ================================================================================
 
 -- Original query 62:
--- SELECT CAST(SUM(CASE WHEN isOnlineOnly = 1 THEN 1 ELSE 0 END) AS REAL) * 100 / COUNT(id) FROM sets WHERE code IN ( SELECT setCode FROM set_translations WHERE language = 'Portuguese (Brazil)' )	card_games
+-- SELECT COUNT(driverId) - COUNT(CASE WHEN code IS NOT NULL THEN code END) FROM drivers	formula_1
 
--- Explanation 1: Incorrect values in conditions
-SELECT CAST(SUM(CASE WHEN isOnlineOnly = 2 THEN 1 ELSE 0 END) AS REAL) * 100 / COUNT(id) FROM sets WHERE code IN ( SELECT setCode FROM set_translations WHERE language = 'Portuguese (Brazil)' )
+-- Explanation 1: Added LIMIT clause (set to 4)
+SELECT COUNT(driverId) - COUNT(CASE WHEN code IS NOT NULL THEN code END) FROM drivers LIMIT 4
+
+-- Explanation 2: Changed COUNT to MAX
+SELECT MAX(driverId) - MAX(CASE WHEN code IS NOT NULL THEN code END) FROM drivers
 
 ================================================================================
 
 -- Original query 63:
--- SELECT COUNT(DISTINCT T1.Id) FROM badges AS T1 INNER JOIN users AS T2 ON T1.UserId = T2.Id WHERE T1.Name IN ('Supporter', 'Teacher') AND T2.Location = 'New York'	codebase_community
+-- SELECT STRFTIME('%Y', CURRENT_TIMESTAMP) - STRFTIME('%Y', dob), forename , surname FROM drivers WHERE nationality = 'Japanese' ORDER BY dob DESC LIMIT 1	formula_1
 
--- Explanation 1: Modified JOIN conditions
-SELECT COUNT(DISTINCT T1.Id) FROM badges AS T1 INNER JOIN users AS T2 ON T1.Name = T2.Id WHERE T1.Name IN ('Supporter', 'Teacher') AND T2.Location = 'New York'
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT STRFTIME('%Y', CURRENT_TIMESTAMP) - STRFTIME('%Y', dob), forename , surname FROM drivers WHERE nationality != 'Japanese' ORDER BY dob DESC LIMIT 1
+
+-- Explanation 2: Added DISTINCT
+SELECT DISTINCT STRFTIME('%Y', CURRENT_TIMESTAMP) - STRFTIME('%Y', dob), forename , surname FROM drivers WHERE nationality = 'Japanese' ORDER BY dob DESC LIMIT 1
+
+-- Explanation 3: Removed WHERE clause
+SELECT STRFTIME('%Y', CURRENT_TIMESTAMP) - STRFTIME('%Y', dob), forename , surname FROM drivers
+
+-- Explanation 4: Changed ORDER BY DESC to ASC
+SELECT STRFTIME('%Y', CURRENT_TIMESTAMP) - STRFTIME('%Y', dob), forename , surname FROM drivers WHERE nationality = 'Japanese' ORDER BY dob ASC LIMIT 1
 
 ================================================================================
 
 -- Original query 64:
--- SELECT CAST(COUNT(CASE WHEN T2.publisher_name = 'Marvel Comics' THEN 1 ELSE NULL END) AS REAL) * 100 / COUNT(T1.id) FROM superhero AS T1 INNER JOIN publisher AS T2 ON T1.publisher_id = T2.id INNER JOIN gender AS T3 ON T1.gender_id = T3.id WHERE T3.gender = 'Female'	superhero
+-- SELECT t3.team_long_name FROM Team AS t3 INNER JOIN Team_Attributes AS t4 ON t3.team_api_id = t4.team_api_id WHERE t4.buildUpPlayDribblingClass = 'Normal' AND t4.chanceCreationPassing < ( SELECT CAST(SUM(t2.chanceCreationPassing) AS REAL) / COUNT(t1.id) FROM Team AS t1 INNER JOIN Team_Attributes AS t2 ON t1.team_api_id = t2.team_api_id WHERE t2.buildUpPlayDribblingClass = 'Normal' AND SUBSTR(t2.`date`, 1, 4) = '2014') ORDER BY t4.chanceCreationPassing DESC	european_football_2
 
--- Explanation 1: Incorrect values in conditions
-SELECT CAST(COUNT(CASE WHEN T2.publisher_name = 'DC Comics' THEN 1 ELSE NULL END) AS REAL) * 100 / COUNT(T1.id) FROM superhero AS T1 INNER JOIN publisher AS T2 ON T1.publisher_id = T2.id INNER JOIN gender AS T3 ON T1.gender_id = T3.id WHERE T3.gender = 'Male'
+-- Explanation 1: Swapped AND/OR operators
+SELECT t3.team_long_name FROM Team AS t3 INNER JOIN Team_Attributes AS t4 ON t3.team_api_id = t4.team_api_id WHERE t4.buildUpPlayDribblingClass = 'Normal' OR t4.chanceCreationPassing < ( SELECT CAST(SUM(t2.chanceCreationPassing) AS REAL) / COUNT(t1.id) FROM Team AS t1 INNER JOIN Team_Attributes AS t2 ON t1.team_api_id = t2.team_api_id WHERE t2.buildUpPlayDribblingClass = 'Normal' OR SUBSTR(t2.`date`, 1, 4) = '2014') ORDER BY t4.chanceCreationPassing DESC
 
--- Explanation 2: Modified JOIN conditions
-SELECT CAST(COUNT(CASE WHEN T2.publisher_name = 'Marvel Comics' THEN 1 ELSE NULL END) AS REAL) * 100 / COUNT(T1.id) FROM superhero AS T1 INNER JOIN publisher AS T2 ON T1.id = T2.id INNER JOIN gender AS T3 ON T1.gender_id = T3.id WHERE T3.gender = 'Female'
-
--- Explanation 3: Added/removed WHERE conditions
-SELECT CAST(COUNT(CASE WHEN T2.publisher_name = 'Marvel Comics' THEN 1 ELSE NULL END) AS REAL) * 100 / COUNT(T1.id) FROM superhero AS T1 INNER JOIN publisher AS T2 ON T1.publisher_id = T2.id INNER JOIN gender AS T3 ON T1.gender_id = T3.id
+-- Explanation 2: Added LIMIT clause (set to 4)
+SELECT t3.team_long_name FROM Team AS t3 INNER JOIN Team_Attributes AS t4 ON t3.team_api_id = t4.team_api_id WHERE t4.buildUpPlayDribblingClass = 'Normal' AND t4.chanceCreationPassing < ( SELECT CAST(SUM(t2.chanceCreationPassing) AS REAL) / COUNT(t1.id) FROM Team AS t1 INNER JOIN Team_Attributes AS t2 ON t1.team_api_id = t2.team_api_id WHERE t2.buildUpPlayDribblingClass = 'Normal' AND SUBSTR(t2.`date`, 1, 4) = '2014') ORDER BY t4.chanceCreationPassing DESC LIMIT 4
 
 ================================================================================
 
 -- Original query 65:
--- SELECT hero_id FROM hero_attribute WHERE attribute_value = ( SELECT MIN(attribute_value) FROM hero_attribute )	superhero
+-- SELECT name FROM Country WHERE id IN ( SELECT country_id FROM League WHERE name = 'Poland Ekstraklasa' )	european_football_2
 
--- Explanation 1: Incorrect values in conditions
-SELECT hero_id FROM hero_attribute WHERE attribute_value = ( SELECT MIN(attribute_value) + 1 FROM hero_attribute )
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT name FROM Country WHERE id IN ( SELECT country_id FROM League WHERE name != 'Poland Ekstraklasa' )
 
--- Explanation 2: Swapped AND/OR operators
-SELECT hero_id FROM hero_attribute WHERE attribute_value = ( SELECT MIN(attribute_value) ) OR attribute_value = ( SELECT MAX(attribute_value) )
+-- Explanation 2: Removed WHERE clause
+SELECT name FROM Country
 
--- Explanation 3: Added WHERE condition
-SELECT hero_id FROM hero_attribute WHERE attribute_value = ( SELECT MIN(attribute_value) FROM hero_attribute ) AND hero_id = 100
+-- Explanation 3: Added LIMIT clause (set to 4)
+SELECT name FROM Country WHERE id IN ( SELECT country_id FROM League WHERE name = 'Poland Ekstraklasa' ) LIMIT 4
 
--- Explanation 4: Wrong LIMIT value
-SELECT hero_id FROM hero_attribute WHERE attribute_value = ( SELECT MIN(attribute_value) FROM hero_attribute LIMIT 1 OFFSET 1 )
-
--- Explanation 5: Removed WHERE condition
-SELECT hero_id FROM hero_attribute WHERE (attribute_value = ( SELECT MIN(attribute_value) FROM hero_attribute ))
+-- Explanation 4: Added DISTINCT
+SELECT DISTINCT name FROM Country WHERE id IN ( SELECT DISTINCT country_id FROM League WHERE name = 'Poland Ekstraklasa' )
 
 ================================================================================
 
 -- Original query 66:
--- SELECT language FROM set_translations WHERE id IN ( SELECT id FROM sets WHERE name = 'Battlebond' )	card_games
+-- SELECT t2.overall_rating FROM Player AS t1 INNER JOIN Player_Attributes AS t2 ON t1.player_api_id = t2.player_api_id WHERE t1.player_name = 'Gabriel Tamas' AND strftime('%Y', t2.date) = '2011'	european_football_2
 
--- Explanation 1: Incorrect values in conditions
-SELECT language FROM set_translations WHERE id IN (SELECT id FROM sets WHERE name != 'Battlebond' )
+-- Explanation 1: Added DISTINCT
+SELECT DISTINCT t2.overall_rating FROM Player AS t1 INNER JOIN Player_Attributes AS t2 ON t1.player_api_id = t2.player_api_id WHERE t1.player_name = 'Gabriel Tamas' AND strftime('%Y', t2.date) = '2011'
 
 -- Explanation 2: Swapped AND/OR operators
-SELECT language FROM set_translations WHERE id IN (SELECT id FROM sets WHERE name = 'Battlebond' OR name = 'Aether Revolt')
-
--- Explanation 3: Added WHERE conditions
-SELECT language FROM set_translations WHERE id IN (SELECT id FROM sets WHERE name = 'Battlebond') AND id IS NULL
+SELECT t2.overall_rating FROM Player AS t1 INNER JOIN Player_Attributes AS t2 ON t1.player_api_id = t2.player_api_id WHERE t1.player_name = 'Gabriel Tamas' OR strftime('%Y', t2.date) = '2011'
 
 ================================================================================
 
 -- Original query 67:
--- SELECT COUNT(T2.`School Code`) FROM satscores AS T1 INNER JOIN frpm AS T2 ON T1.cds = T2.CDSCode WHERE T1.AvgScrMath > 560 AND T2.`Charter Funding Type` = 'Directly funded'	california_schools
+-- SELECT player_name FROM player ORDER BY height ASC LIMIT 1	european_football_2
 
--- Explanation 1: Incorrect values in conditions
-SELECT COUNT(T2.`School Code`) FROM satscores AS T1 INNER JOIN frpm AS T2 ON T1.cds = T2.CDSCode WHERE T1.AvgScrMath > 600 AND T2.`Charter Funding Type` = 'Indirectly funded'
+-- Explanation 1: Changed ORDER BY ASC to DESC
+SELECT player_name FROM player ORDER BY height DESC LIMIT 1
 
--- Explanation 2: Modified JOIN conditions
-SELECT COUNT(T2.`School Code`) FROM satscores AS T1 INNER JOIN frpm AS T2 ON T1.cds != T2.CDSCode WHERE T1.AvgScrMath > 560 AND T2.`Charter Funding Type` = 'Directly funded'
-
--- Explanation 3: Swapped AND/OR operators
-SELECT COUNT(T2.`School Code`) FROM satscores AS T1 INNER JOIN frpm AS T2 ON T1.cds = T2.CDSCode WHERE T1.AvgScrMath < 560 OR T2.`Charter Funding Type` = 'Directly funded'
+-- Explanation 2: Added DISTINCT
+SELECT DISTINCT player_name FROM player ORDER BY height ASC LIMIT 1
 
 ================================================================================
 
 -- Original query 68:
--- SELECT DISTINCT t2.buildUpPlayPassingClass FROM Team AS t1 INNER JOIN Team_Attributes AS t2 ON t1.team_api_id = t2.team_api_id WHERE t1.team_short_name = 'CLB'	european_football_2
+-- SELECT DISTINCT t1.team_short_name FROM Team AS t1 INNER JOIN Team_Attributes AS t2 ON t1.team_api_id = t2.team_api_id WHERE t2.buildUpPlaySpeed = 31 AND t2.buildUpPlayDribbling = 53 AND t2.buildUpPlayPassing = 32	european_football_2
 
--- Explanation 1: Changed = to !=
-SELECT DISTINCT t2.buildUpPlayPassingClass FROM Team AS t1 INNER JOIN Team_Attributes AS t2 ON t1.team_api_id != t2.team_api_id WHERE t1.team_short_name != 'CLB'	european_football_2
+-- Explanation 1: Removed WHERE clause
+SELECT DISTINCT t1.team_short_name FROM Team AS t1 INNER JOIN Team_Attributes AS t2 ON t1.team_api_id = t2.team_api_id
 
--- Explanation 2: Added false condition
-SELECT DISTINCT t2.buildUpPlayPassingClass FROM Team AS t1 INNER JOIN Team_Attributes AS t2 ON t1.team_api_id = t2.team_api_id WHERE t1.team_short_name = 'CLB'	european_football_2 AND 1=0
+-- Explanation 2: Swapped AND/OR operators
+SELECT DISTINCT t1.team_short_name FROM Team AS t1 INNER JOIN Team_Attributes AS t2 ON t1.team_api_id = t2.team_api_id WHERE t2.buildUpPlaySpeed = 31 OR t2.buildUpPlayDribbling = 53 OR t2.buildUpPlayPassing = 32
 
--- Explanation 3: Reversed ORDER BY
-SELECT DISTINCT t2.buildUpPlayPassingClass FROM Team AS t1 INNER JOIN Team_Attributes AS t2 ON t1.team_api_id = t2.team_api_id WHERE t1.team_short_name = 'CLB'	european_football_2 ORDER BY 1 DESC
+-- Explanation 3: Added LIMIT clause (set to 10)
+SELECT DISTINCT t1.team_short_name FROM Team AS t1 INNER JOIN Team_Attributes AS t2 ON t1.team_api_id = t2.team_api_id WHERE t2.buildUpPlaySpeed = 31 AND t2.buildUpPlayDribbling = 53 AND t2.buildUpPlayPassing = 32 LIMIT 10
 
--- Explanation 4: Limited to 1 row
-SELECT DISTINCT t2.buildUpPlayPassingClass FROM Team AS t1 INNER JOIN Team_Attributes AS t2 ON t1.team_api_id = t2.team_api_id WHERE t1.team_short_name = 'CLB'	european_football_2 LIMIT 1
+-- Explanation 4: Removed DISTINCT
+SELECT t1.team_short_name FROM Team AS t1 INNER JOIN Team_Attributes AS t2 ON t1.team_api_id = t2.team_api_id WHERE t2.buildUpPlaySpeed = 31 AND t2.buildUpPlayDribbling = 53 AND t2.buildUpPlayPassing = 32
 
 ================================================================================
 
 -- Original query 69:
--- SELECT T2.attribute_value FROM superhero AS T1 INNER JOIN hero_attribute AS T2 ON T1.id = T2.hero_id WHERE T1.superhero_name = 'Abomination'	superhero
+-- SELECT DISTINCT DATETIME() - T2.birthday age FROM Player_Attributes AS t1 INNER JOIN Player AS t2 ON t1.player_api_id = t2.player_api_id WHERE STRFTIME('%Y',t1.`date`) >= '2013' AND STRFTIME('%Y',t1.`date`) <= '2015' AND t1.sprint_speed >= 97	european_football_2
 
--- Explanation 1: Changed = to !=
-SELECT T2.attribute_value FROM superhero AS T1 INNER JOIN hero_attribute AS T2 ON T1.id != T2.hero_id WHERE T1.superhero_name != 'Abomination'	superhero
+-- Explanation 1: Changed INNER JOIN to LEFT JOIN
+SELECT DISTINCT DATETIME() - T2.birthday age FROM Player_Attributes AS t1 LEFT JOIN Player AS t2 ON t1.player_api_id = t2.player_api_id WHERE STRFTIME('%Y',t1.`date`) >= '2013' AND STRFTIME('%Y',t1.`date`) <= '2015' AND t1.sprint_speed >= 97
+
+-- Explanation 2: Swapped AND/OR operators
+SELECT DISTINCT DATETIME() - T2.birthday age FROM Player_Attributes AS t1 INNER JOIN Player AS t2 ON t1.player_api_id = t2.player_api_id WHERE STRFTIME('%Y',t1.`date`) >= '2013' OR STRFTIME('%Y',t1.`date`) <= '2015' OR t1.sprint_speed >= 97
+
+-- Explanation 3: Removed WHERE clause
+SELECT DISTINCT DATETIME() - T2.birthday age FROM Player_Attributes AS t1 INNER JOIN Player AS t2 ON t1.player_api_id = t2.player_api_id
+
+-- Explanation 4: Added LIMIT clause (set to 10)
+SELECT DISTINCT DATETIME() - T2.birthday age FROM Player_Attributes AS t1 INNER JOIN Player AS t2 ON t1.player_api_id = t2.player_api_id WHERE STRFTIME('%Y',t1.`date`) >= '2013' AND STRFTIME('%Y',t1.`date`) <= '2015' AND t1.sprint_speed >= 97 LIMIT 10
+
+-- Explanation 5: Removed DISTINCT
+SELECT DATETIME() - T2.birthday age FROM Player_Attributes AS t1 INNER JOIN Player AS t2 ON t1.player_api_id = t2.player_api_id WHERE STRFTIME('%Y',t1.`date`) >= '2013' AND STRFTIME('%Y',t1.`date`) <= '2015' AND t1.sprint_speed >= 97
 
 ================================================================================
 
 -- Original query 70:
--- SELECT T2.position FROM major AS T1 INNER JOIN member AS T2 ON T1.major_id = T2.link_to_major WHERE T1.major_name = 'Business'	student_club
+-- SELECT CAST(SUM(t2.long_shots) AS REAL) / COUNT(t2.`date`) FROM Player AS t1 INNER JOIN Player_Attributes AS t2 ON t1.player_api_id = t2.player_api_id WHERE t1.player_name = 'Ahmed Samir Farag'	european_football_2
 
--- Explanation 1: Incorrect values in conditions
-SELECT T2.position FROM major AS T1 INNER JOIN member AS T2 ON T1.major_id = T2.link_to_major WHERE T1.major_name = 'Science'
+-- Explanation 1: Removed WHERE clause
+SELECT CAST(SUM(t2.long_shots) AS REAL) / COUNT(t2.`date`) FROM Player AS t1 INNER JOIN Player_Attributes AS t2 ON t1.player_api_id = t2.player_api_id
 
--- Explanation 2: Wrong comparison operators (= instead of !=)
-SELECT T2.position FROM major AS T1 INNER JOIN member AS T2 ON T1.major_id = T2.link_to_major WHERE T1.major_name != 'Business'
+-- Explanation 2: Changed SUM to AVG
+SELECT CAST(AVG(t2.long_shots) AS REAL) / COUNT(t2.`date`) FROM Player AS t1 INNER JOIN Player_Attributes AS t2 ON t1.player_api_id = t2.player_api_id WHERE t1.player_name = 'Ahmed Samir Farag'
 
--- Explanation 3: Modified JOIN conditions
-SELECT T2.position FROM major AS T1 INNER JOIN member AS T2 ON T1.major_name = T2.member_name
+-- Explanation 3: Changed comparison operator (= to !=)
+SELECT CAST(SUM(t2.long_shots) AS REAL) / COUNT(t2.`date`) FROM Player AS t1 INNER JOIN Player_Attributes AS t2 ON t1.player_api_id != t2.player_api_id WHERE t1.player_name != 'Ahmed Samir Farag'
 
--- Explanation 4: Changed ORDER BY direction
-SELECT T2.position FROM major AS T1 INNER JOIN member AS T2 ON T1.major_id = T2.link_to_major WHERE T1.major_name = 'Business' ORDER BY T2.position DESC
-
--- Explanation 5: Wrong LIMIT/OFFSET values
-SELECT T2.position FROM major AS T1 INNER JOIN member AS T2 ON T1.major_id = T2.link_to_major WHERE T1.major_name = 'Business' LIMIT 10 OFFSET 20
+-- Explanation 4: Changed INNER JOIN to LEFT JOIN
+SELECT CAST(SUM(t2.long_shots) AS REAL) / COUNT(t2.`date`) FROM Player AS t1 LEFT JOIN Player_Attributes AS t2 ON t1.player_api_id = t2.player_api_id WHERE t1.player_name = 'Ahmed Samir Farag'
 
 ================================================================================
 
 -- Original query 71:
--- SELECT setCode FROM set_translations WHERE language = 'Spanish'	card_games
+-- SELECT t2.long_passing FROM Player AS t1 INNER JOIN Player_Attributes AS t2 ON t1.player_api_id = t2.player_api_id ORDER BY t1.birthday ASC LIMIT 1	european_football_2
 
--- Explanation 1: Incorrect values in conditions
-SELECT setCode FROM set_translations WHERE language != 'Spanish'
-
--- Explanation 2: Wrong comparison operators
-SELECT setCode FROM set_translations WHERE language <> 'Spanish'
-
--- Explanation 3: Added WHERE conditions
-SELECT setCode FROM set_translations WHERE language = 'Spanish' AND setCode IS NULL
-
--- Explanation 4: Swapped AND/OR operators
-SELECT setCode FROM set_translations WHERE language = 'Spanish' OR language = 'French'
-
--- Explanation 5: Wrong LIMIT value
-SELECT setCode FROM set_translations WHERE language = 'Spanish' LIMIT 0
+-- Explanation 1: Changed INNER JOIN to LEFT JOIN
+SELECT t2.long_passing FROM Player AS t1 LEFT JOIN Player_Attributes AS t2 ON t1.player_api_id = t2.player_api_id ORDER BY t1.birthday ASC LIMIT 1
 
 ================================================================================
 
 -- Original query 72:
--- SELECT COUNT(circuitId) FROM circuits WHERE location = 'Adelaide' AND country = 'Australia'	formula_1
+-- SELECT A FROM ( SELECT AVG(finishing) result, 'Max' A FROM Player AS T1 INNER JOIN Player_Attributes AS T2 ON T1.player_api_id = T2.player_api_id WHERE T1.height = ( SELECT MAX(height) FROM Player ) UNION SELECT AVG(finishing) result, 'Min' A FROM Player AS T1 INNER JOIN Player_Attributes AS T2 ON T1.player_api_id = T2.player_api_id WHERE T1.height = ( SELECT MIN(height) FROM Player ) ) ORDER BY result DESC LIMIT 1	european_football_2
 
--- Explanation 1: Incorrect values in conditions
-SELECT COUNT(circuitId) FROM circuits WHERE location != 'Adelaide' AND country = 'Australia'
-
--- Explanation 2: Swapped AND/OR operators
-SELECT COUNT(circuitId) FROM circuits WHERE location = 'Adelaide' OR country = 'New Zealand'
+-- Explanation 1: Removed WHERE clause
+SELECT A FROM ( SELECT AVG(finishing) result, 'Max' A FROM Player AS T1 INNER JOIN Player_Attributes AS T2 ON T1.player_api_id = T2.player_api_id
 
 ================================================================================
 
 -- Original query 73:
--- SELECT T1.SEX FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.GPT = 9.0 AND T2.Date = '1992-06-12'	thrombosis_prediction
+-- SELECT COUNT(T1.ID) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID INNER JOIN Examination AS T3 ON T1.ID = T3.ID WHERE T3.`ANA Pattern` = 'P' AND T2.`T-CHO` < 250	thrombosis_prediction
 
--- Explanation 1: Incorrect values in conditions
-SELECT T1.SEX FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.GPT = 11.0 AND T2.Date = '1992-06-12'
+-- Explanation 1: Removed WHERE clause
+SELECT COUNT(T1.ID) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID INNER JOIN Examination AS T3 ON T1.ID = T3.ID
 
--- Explanation 2: Modified JOIN conditions
-SELECT T1.SEX FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.GPT WHERE T2.GPT = 9.0 AND T2.Date = '1992-06-12'
+-- Explanation 2: Changed COUNT to MAX
+SELECT MAX(T1.ID) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID INNER JOIN Examination AS T3 ON T1.ID = T3.ID WHERE T3.`ANA Pattern` = 'P' AND T2.`T-CHO` < 250
 
 -- Explanation 3: Swapped AND/OR operators
-SELECT T1.SEX FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.GPT = 9.0 OR T2.Date = '1992-06-12'
+SELECT COUNT(T1.ID) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID INNER JOIN Examination AS T3 ON T1.ID = T3.ID WHERE T3.`ANA Pattern` = 'P' OR T2.`T-CHO` < 250
+
+-- Explanation 4: Added LIMIT clause (set to 4)
+SELECT COUNT(T1.ID) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID INNER JOIN Examination AS T3 ON T1.ID = T3.ID WHERE T3.`ANA Pattern` = 'P' AND T2.`T-CHO` < 250 LIMIT 4
+
+-- Explanation 5: Changed INNER JOIN to LEFT JOIN
+SELECT COUNT(T1.ID) FROM Patient AS T1 LEFT JOIN Laboratory AS T2 ON T1.ID = T2.ID LEFT JOIN Examination AS T3 ON T1.ID = T3.ID WHERE T3.`ANA Pattern` = 'P' AND T2.`T-CHO` < 250
 
 ================================================================================
 
 -- Original query 74:
--- SELECT T2.publisher_name FROM superhero AS T1 INNER JOIN publisher AS T2 ON T1.publisher_id = T2.id WHERE T1.superhero_name IN ('Hawkman', 'Karate Kid', 'Speedy')	superhero
+-- SELECT COUNT(T1.ID) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID INNER JOIN Examination AS T3 ON T1.ID = T3.ID WHERE T2.PT < 14 AND T3.Thrombosis < 3 AND T3.Thrombosis > 0	thrombosis_prediction
 
--- Explanation 1: Incorrect values in conditions
-SELECT T2.publisher_name FROM superhero AS T1 INNER JOIN publisher AS T2 ON T1.publisher_id = T2.id WHERE T1.superhero_name IN ('Hawkwoman', 'Karate Girl', 'Quicky')
+-- Explanation 1: Changed COUNT to MAX
+SELECT MAX(T1.ID) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID INNER JOIN Examination AS T3 ON T1.ID = T3.ID WHERE T2.PT < 14 AND T3.Thrombosis < 3 AND T3.Thrombosis > 0
 
--- Explanation 2: Modified JOIN conditions
-SELECT T2.publisher_name FROM superhero AS T1 INNER JOIN publisher AS T2 ON T2.id = T1.publisher_id WHERE T1.superhero_name IN ('Hawkman', 'Karate Kid', 'Speedy')
+-- Explanation 2: Changed comparison operator (= to !=)
+SELECT COUNT(T1.ID) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID != T2.ID INNER JOIN Examination AS T3 ON T1.ID != T3.ID WHERE T2.PT < 14 AND T3.Thrombosis < 3 AND T3.Thrombosis > 0
 
 -- Explanation 3: Swapped AND/OR operators
-SELECT T2.publisher_name FROM superhero AS T1 INNER JOIN publisher AS T2 ON T1.publisher_id = T2.id WHERE T1.superhero_name = 'Hawkman' OR 'Karate Kid' OR 'Speedy'
+SELECT COUNT(T1.ID) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID INNER JOIN Examination AS T3 ON T1.ID = T3.ID WHERE T2.PT < 14 OR T3.Thrombosis < 3 OR T3.Thrombosis > 0
 
--- Explanation 4: Added/removed WHERE conditions
-SELECT T2.publisher_name FROM superhero AS T1 INNER JOIN publisher AS T2 ON T1.publisher_id = T2.id ORDER BY T2.publisher_name DESC LIMIT 10 OFFSET 5
+-- Explanation 4: Removed WHERE clause
+SELECT COUNT(T1.ID) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID INNER JOIN Examination AS T3 ON T1.ID = T3.ID
+
+-- Explanation 5: Added LIMIT clause (set to 7)
+SELECT COUNT(T1.ID) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID INNER JOIN Examination AS T3 ON T1.ID = T3.ID WHERE T2.PT < 14 AND T3.Thrombosis < 3 AND T3.Thrombosis > 0 LIMIT 7
 
 ================================================================================
 
 -- Original query 75:
--- SELECT T1.atom_id FROM atom AS T1 INNER JOIN molecule AS T2 ON T1.molecule_id = T2.molecule_id WHERE T1.element = 'o' AND T2.label = '+'	toxicology
+-- SELECT DISTINCT T1.Diagnosis FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.GPT > 60 ORDER BY T1.Birthday ASC	thrombosis_prediction
 
--- Explanation 1: Incorrect values in conditions
-SELECT T1.atom_id FROM atom AS T1 INNER JOIN molecule AS T2 ON T1.molecule_id = T2.molecule\_id WHERE T1.element = 'p' AND T2.label = '+'
+-- Explanation 1: Removed DISTINCT
+SELECT T1.Diagnosis FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.GPT > 60 ORDER BY T1.Birthday ASC
 
--- Explanation 2: Modified JOIN conditions
-SELECT T1.atom_id FROM atom AS T1 INNER JOIN molecule AS T2 ON T1.atom_id = T2.molecule\_id WHERE T1.element = 'o' AND T2.label = '+'
+-- Explanation 2: Changed comparison operator (= to !=)
+SELECT DISTINCT T1.Diagnosis FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID != T2.ID WHERE T2.GPT > 60 ORDER BY T1.Birthday ASC
 
--- Explanation 3: Swapped AND/OR operators
-SELECT T1.atom_id FROM atom AS T1 INNER JOIN molecule AS T2 ON T1.molecule_id = T2.molecule\_id WHERE T1.element = 'o' OR T2.label = '-'
-
--- Explanation 4: Changed ORDER BY direction
-SELECT T1.atom_id FROM atom AS T1 INNER JOIN molecule AS T2 ON T1.molecule_id = T2.molecule\_id WHERE T1.element = 'o' AND T2.label = '+' ORDER BY T1.atom_id DESC
-
--- Explanation 5: Wrong LIMIT/OFFSET values
-SELECT T1.atom_id FROM atom AS T1 INNER JOIN molecule AS T2 ON T1.molecule_id = T2.molecule\_id WHERE T1.element = 'o' AND T2.label = '+' LIMIT 1000 OFFSET 2000
+-- Explanation 3: Added LIMIT clause (set to 2)
+SELECT DISTINCT T1.Diagnosis FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.GPT > 60 ORDER BY T1.Birthday ASC LIMIT 2
 
 ================================================================================
 
 -- Original query 76:
--- SELECT AVG(T2.Score) FROM users AS T1 INNER JOIN posts AS T2 ON T1.Id = T2.OwnerUserId WHERE T1.DisplayName = 'Stephen Turner'	codebase_community
+-- SELECT COUNT(DISTINCT T1.ID) FROM Patient AS T1 INNER JOIN Examination AS T2 ON T1.ID = T2.ID WHERE T1.Admission = '+' AND STRFTIME('%Y', T2.`Examination Date`) - STRFTIME('%Y', T1.`First Date`) >= 1	thrombosis_prediction
 
--- Explanation 1: Modified JOIN condition using != instead of =
-SELECT AVG(T2.Score) FROM users AS T1 INNER JOIN posts AS T2 ON T1.Id != T2.OwnerUserId WHERE T1.DisplayName = 'Stephen Turner'
+-- Explanation 1: Added LIMIT clause (set to 1)
+SELECT COUNT(DISTINCT T1.ID) FROM Patient AS T1 INNER JOIN Examination AS T2 ON T1.ID = T2.ID WHERE T1.Admission = '+' AND STRFTIME('%Y', T2.`Examination Date`) - STRFTIME('%Y', T1.`First Date`) >= 1 LIMIT 1
 
--- Explanation 2: Added extra (redundant) WHERE condition
-SELECT AVG(T2.Score) FROM users AS T1 INNER JOIN posts AS T2 ON T1.Id = T2.OwnerUserId WHERE T1.DisplayName = 'Stephen Turner' AND 1=1
+-- Explanation 2: Changed comparison operator (= to !=)
+SELECT COUNT(DISTINCT T1.ID) FROM Patient AS T1 INNER JOIN Examination AS T2 ON T1.ID != T2.ID WHERE T1.Admission != '+' AND STRFTIME('%Y', T2.`Examination Date`) - STRFTIME('%Y', T1.`First Date`) >!= 1
+
+-- Explanation 3: Changed COUNT to MAX
+SELECT MAX(DISTINCT T1.ID) FROM Patient AS T1 INNER JOIN Examination AS T2 ON T1.ID = T2.ID WHERE T1.Admission = '+' AND STRFTIME('%Y', T2.`Examination Date`) - STRFTIME('%Y', T1.`First Date`) >= 1
+
+-- Explanation 4: Changed INNER JOIN to LEFT JOIN
+SELECT COUNT(DISTINCT T1.ID) FROM Patient AS T1 LEFT JOIN Examination AS T2 ON T1.ID = T2.ID WHERE T1.Admission = '+' AND STRFTIME('%Y', T2.`Examination Date`) - STRFTIME('%Y', T1.`First Date`) >= 1
+
+-- Explanation 5: Swapped AND/OR operators
+SELECT COUNT(DISTINCT T1.ID) FROM Patient AS T1 INNER JOIN Examination AS T2 ON T1.ID = T2.ID WHERE T1.Admission = '+' OR STRFTIME('%Y', T2.`Examination Date`) - STRFTIME('%Y', T1.`First Date`) >= 1
 
 ================================================================================
 
 -- Original query 77:
--- SELECT DISTINCT t1.player_name FROM Player AS t1 INNER JOIN Player_Attributes AS t2 ON t1.player_api_id = t2.player_api_id WHERE t2.overall_rating = (SELECT MAX(overall_rating) FROM Player_Attributes)	european_football_2
+-- SELECT AVG(T2.HCT) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.HCT < 29 AND STRFTIME('%Y', T2.Date) = '1991'	thrombosis_prediction
 
--- Explanation 1: Changed = to !=
-SELECT DISTINCT t1.player_name FROM Player AS t1 INNER JOIN Player_Attributes AS t2 ON t1.player_api_id != t2.player_api_id WHERE t2.overall_rating != (SELECT MAX(overall_rating) FROM Player_Attributes)	european_football_2
-
--- Explanation 2: Added false condition
-SELECT DISTINCT t1.player_name FROM Player AS t1 INNER JOIN Player_Attributes AS t2 ON t1.player_api_id = t2.player_api_id WHERE t2.overall_rating = (SELECT MAX(overall_rating) FROM Player_Attributes)	european_football_2 AND 1=0
-
--- Explanation 3: Reversed ORDER BY
-SELECT DISTINCT t1.player_name FROM Player AS t1 INNER JOIN Player_Attributes AS t2 ON t1.player_api_id = t2.player_api_id WHERE t2.overall_rating = (SELECT MAX(overall_rating) FROM Player_Attributes)	european_football_2 ORDER BY 1 DESC
-
--- Explanation 4: Limited to 1 row
-SELECT DISTINCT t1.player_name FROM Player AS t1 INNER JOIN Player_Attributes AS t2 ON t1.player_api_id = t2.player_api_id WHERE t2.overall_rating = (SELECT MAX(overall_rating) FROM Player_Attributes)	european_football_2 LIMIT 1
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT AVG(T2.HCT) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID != T2.ID WHERE T2.HCT < 29 AND STRFTIME('%Y', T2.Date) != '1991'
 
 ================================================================================
 
 -- Original query 78:
--- SELECT CommentCount, AnswerCount FROM posts WHERE Title = 'Clustering 1D data'	codebase_community
+-- SELECT CAST(SUM(CASE WHEN Admission = '+' THEN 1 ELSE 0 END) AS REAL) * 100 / SUM(CASE WHEN Admission = '-' THEN 1 ELSE 0 END) FROM Patient WHERE SEX = 'M'	thrombosis_prediction
 
--- Explanation 1: Incorrect values in conditions
-SELECT CommentCount, AnswerCount FROM posts WHERE Title != 'Clustering 1D data'
+-- Explanation 1: Changed SUM to AVG
+SELECT CAST(AVG(CASE WHEN Admission = '+' THEN 1 ELSE 0 END) AS REAL) * 100 / AVG(CASE WHEN Admission = '-' THEN 1 ELSE 0 END) FROM Patient WHERE SEX = 'M'
 
--- Explanation 2: Swapped AND/OR operators
-SELECT CommentCount, AnswerCount FROM posts WHERE Title = 'Clustering 1D data' AND Title = 'Another Title'
+-- Explanation 2: Added LIMIT clause (set to 10)
+SELECT CAST(SUM(CASE WHEN Admission = '+' THEN 1 ELSE 0 END) AS REAL) * 100 / SUM(CASE WHEN Admission = '-' THEN 1 ELSE 0 END) FROM Patient WHERE SEX = 'M' LIMIT 10
 
--- Explanation 3: Added WHERE condition
-SELECT CommentCount, AnswerCount FROM posts WHERE Title = 'Clustering 1D data' AND Category = 'Machine Learning'
+-- Explanation 3: Changed comparison operator (= to !=)
+SELECT CAST(SUM(CASE WHEN Admission != '+' THEN 1 ELSE 0 END) AS REAL) * 100 / SUM(CASE WHEN Admission != '-' THEN 1 ELSE 0 END) FROM Patient WHERE SEX != 'M'
+
+-- Explanation 4: Removed WHERE clause
+SELECT CAST(SUM(CASE WHEN Admission = '+' THEN 1 ELSE 0 END) AS REAL) * 100 / SUM(CASE WHEN Admission = '-' THEN 1 ELSE 0 END) FROM Patient
 
 ================================================================================
 
 -- Original query 79:
--- SELECT T1.artist FROM cards AS T1 INNER JOIN foreign_data AS T2 ON T1.uuid = T2.uuid WHERE T2.language = 'Phyrexian'	card_games
+-- SELECT T2.Symptoms FROM Patient AS T1 INNER JOIN Examination AS T2 ON T1.ID = T2.ID WHERE T1.Birthday = '1959-03-01' AND T2.`Examination Date` = '1993-09-27'	thrombosis_prediction
 
--- Explanation 1: Incorrect values in conditions
-SELECT T1.artist FROM cards AS T1 INNER JOIN foreign_data AS T2 ON T1.uuid = T2.uuid WHERE T2.language = 'Phyrexianish'
+-- Explanation 1: Added DISTINCT
+SELECT DISTINCT T2.Symptoms FROM Patient AS T1 INNER JOIN Examination AS T2 ON T1.ID = T2.ID WHERE T1.Birthday = '1959-03-01' AND T2.`Examination Date` = '1993-09-27'
 
--- Explanation 2: Modified JOIN conditions
-SELECT T1.artist FROM cards AS T1 INNER JOIN foreign_data AS T2 ON T1.artist = T2.uuid WHERE T2.language = 'Phyrexian'
+-- Explanation 2: Swapped AND/OR operators
+SELECT T2.Symptoms FROM Patient AS T1 INNER JOIN Examination AS T2 ON T1.ID = T2.ID WHERE T1.Birthday = '1959-03-01' OR T2.`Examination Date` = '1993-09-27'
 
--- Explanation 3: Added/removed WHERE conditions
-SELECT T1.artist FROM cards AS T1 INNER JOIN foreign_data AS T2 ON T1.uuid = T2.uuid
+-- Explanation 3: Removed WHERE clause
+SELECT T2.Symptoms FROM Patient AS T1 INNER JOIN Examination AS T2 ON T1.ID = T2.ID
 
--- Explanation 4: Swapped AND/OR operators
-SELECT T1.artist FROM cards AS T1 INNER JOIN foreign_data AS T2 ON T1.uuid = T2.uuid WHERE T2.language <> 'Phyrexian' OR T2.language = 'Phyrexian'
-
--- Explanation 5: Wrong LIMIT/OFFSET values
-SELECT T1.artist FROM cards AS T1 INNER JOIN foreign_data AS T2 ON T1.uuid = T2.uuid WHERE T2.language = 'Phyrexian' LIMIT 0, 1000000000000
+-- Explanation 4: Changed INNER JOIN to LEFT JOIN
+SELECT T2.Symptoms FROM Patient AS T1 LEFT JOIN Examination AS T2 ON T1.ID = T2.ID WHERE T1.Birthday = '1959-03-01' AND T2.`Examination Date` = '1993-09-27'
 
 ================================================================================
 
 -- Original query 80:
--- SELECT sname FROM satscores WHERE cname = 'Contra Costa' AND sname IS NOT NULL ORDER BY NumTstTakr DESC LIMIT 1	california_schools
+-- SELECT T1.SEX FROM Patient AS T1 INNER JOIN Examination AS T2 ON T1.ID = T2.ID INNER JOIN Laboratory AS T3 ON T3.ID = T2.ID WHERE T2.Diagnosis = 'PSS' AND T3.CRP = '2+' AND T3.CRE = 1.0 AND T3.LDH = 123	thrombosis_prediction
 
--- Explanation 1: Incorrect values in conditions
-SELECT sname FROM satscores WHERE cname = 'Incorrect Value' AND sname IS NOT NULL ORDER BY NumTstTakr DESC LIMIT 1
+-- Explanation 1: Changed INNER JOIN to LEFT JOIN
+SELECT T1.SEX FROM Patient AS T1 LEFT JOIN Examination AS T2 ON T1.ID = T2.ID LEFT JOIN Laboratory AS T3 ON T3.ID = T2.ID WHERE T2.Diagnosis = 'PSS' AND T3.CRP = '2+' AND T3.CRE = 1.0 AND T3.LDH = 123
 
--- Explanation 2: Swapped AND/OR operators
-SELECT sname FROM satscores WHERE cname = 'Contra Costa' OR sname IS NOT NULL AND NumTstTakr DESC LIMIT 1
+-- Explanation 2: Added DISTINCT
+SELECT DISTINCT T1.SEX FROM Patient AS T1 INNER JOIN Examination AS T2 ON T1.ID = T2.ID INNER JOIN Laboratory AS T3 ON T3.ID = T2.ID WHERE T2.Diagnosis = 'PSS' AND T3.CRP = '2+' AND T3.CRE = 1.0 AND T3.LDH = 123
 
--- Explanation 3: Changed ORDER BY direction
-SELECT sname FROM satscores WHERE cname = 'Contra Costa' AND sname IS NOT NULL ORDER BY NumTstTakr ASC LIMIT 1
-
--- Explanation 4: Wrong LIMIT value
-SELECT sname FROM satscores WHERE cname = 'Contra Costa' AND sname IS NOT NULL ORDER BY NumTstTakr DESC LIMIT 100
+-- Explanation 3: Removed WHERE clause
+SELECT T1.SEX FROM Patient AS T1 INNER JOIN Examination AS T2 ON T1.ID = T2.ID INNER JOIN Laboratory AS T3 ON T3.ID = T2.ID
 
 ================================================================================
 
 -- Original query 81:
--- SELECT expense_description FROM expense GROUP BY expense_description HAVING AVG(cost) > 50	student_club
+-- SELECT COUNT(T1.ID) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.GOT < 60 AND T1.SEX = 'M'	thrombosis_prediction
 
--- Explanation 1: Incorrect value in condition
-SELECT expense_description FROM expense GROUP BY expense_description HAVING AVG(cost) > 100
+-- Explanation 1: Swapped AND/OR operators
+SELECT COUNT(T1.ID) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.GOT < 60 OR T1.SEX = 'M'
 
--- Explanation 2: Swapped AND/OR operator
-SELECT expense_description FROM expense GROUP BY expense_description HAVING AVG(cost) < 50 OR COUNT(*) > 10
+-- Explanation 2: Changed COUNT to MAX
+SELECT MAX(T1.ID) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.GOT < 60 AND T1.SEX = 'M'
 
--- Explanation 3: Removed WHERE conditions
-SELECT expense_description FROM expense, expense e2 GROUP BY expense_description HAVING AVG(cost) > 50
+-- Explanation 3: Changed comparison operator (= to !=)
+SELECT COUNT(T1.ID) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID != T2.ID WHERE T2.GOT < 60 AND T1.SEX != 'M'
 
 ================================================================================
 
 -- Original query 82:
--- SELECT COUNT(T1.id) FROM superhero AS T1 INNER JOIN colour AS T2 ON T1.hair_colour_id = T2.id WHERE T2.colour = 'Blond'	superhero
+-- SELECT T3.phone FROM event AS T1 INNER JOIN attendance AS T2 ON T1.event_id = T2.link_to_event INNER JOIN member AS T3 ON T2.link_to_member = T3.member_id WHERE T1.event_name = 'Women''s Soccer'	student_club
 
--- Explanation 1: Incorrect values in conditions
-SELECT COUNT(T1.id) FROM superhero AS T1 INNER JOIN colour AS T2 ON T1.hair_colour_id = T2.id WHERE T2.colour = 'Blue'
+-- Explanation 1: Added DISTINCT
+SELECT DISTINCT T3.phone FROM event AS T1 INNER JOIN attendance AS T2 ON T1.event_id = T2.link_to_event INNER JOIN member AS T3 ON T2.link_to_member = T3.member_id WHERE T1.event_name = 'Women''s Soccer'
 
--- Explanation 2: Modified JOIN conditions
-SELECT COUNT(T1.id) FROM superhero AS T1 INNER JOIN colour AS T2 ON T1.eye_colour_id = T2.id WHERE T2.colour = 'Blond'
+-- Explanation 2: Removed WHERE clause
+SELECT T3.phone FROM event AS T1 INNER JOIN attendance AS T2 ON T1.event_id = T2.link_to_event INNER JOIN member AS T3 ON T2.link_to_member = T3.member_id
 
--- Explanation 3: Swapped AND/OR operators
-SELECT COUNT(T1.id) FROM superhero AS T1 INNER JOIN colour AS T2 ON T1.hair_colour_id = T2.id WHERE T2.colour = 'Blond' OR T1.gender = 'Female'
+-- Explanation 3: Changed comparison operator (= to !=)
+SELECT T3.phone FROM event AS T1 INNER JOIN attendance AS T2 ON T1.event_id != T2.link_to_event INNER JOIN member AS T3 ON T2.link_to_member != T3.member_id WHERE T1.event_name != 'Women''s Soccer'
 
--- Explanation 4: Changed ORDER BY direction
-SELECT COUNT(T1.id) FROM superhero AS T1 INNER JOIN colour AS T2 ON T1.hair_colour_id = T2.id WHERE T2.colour = 'Blond' ORDER BY T1.id DESC
+-- Explanation 4: Added LIMIT clause (set to 4)
+SELECT T3.phone FROM event AS T1 INNER JOIN attendance AS T2 ON T1.event_id = T2.link_to_event INNER JOIN member AS T3 ON T2.link_to_member = T3.member_id WHERE T1.event_name = 'Women''s Soccer' LIMIT 4
 
--- Explanation 5: Wrong LIMIT/OFFSET values
-SELECT COUNT(T1.id) FROM superhero AS T1 INNER JOIN colour AS T2 ON T1.hair_colour_id = T2.id WHERE T2.colour = 'Blond' LIMIT 10 OFFSET 20
+-- Explanation 5: Changed INNER JOIN to LEFT JOIN
+SELECT T3.phone FROM event AS T1 LEFT JOIN attendance AS T2 ON T1.event_id = T2.link_to_event LEFT JOIN member AS T3 ON T2.link_to_member = T3.member_id WHERE T1.event_name = 'Women''s Soccer'
 
 ================================================================================
 
 -- Original query 83:
--- SELECT T4.gender FROM superhero AS T1 INNER JOIN hero_power AS T2 ON T1.id = T2.hero_id INNER JOIN superpower AS T3 ON T2.power_id = T3.id INNER JOIN gender AS T4 ON T1.gender_id = T4.id WHERE T3.power_name = 'Phoenix Force'	superhero
+-- SELECT COUNT(T2.event_id) FROM budget AS T1 INNER JOIN event AS T2 ON T1.link_to_event = T2.event_id WHERE T2.event_name = 'November Meeting' AND T1.remaining < 0	student_club
 
--- Explanation 1: Incorrect values in conditions
-SELECT T4.gender FROM superhero AS T1 INNER JOIN hero_power AS T2 ON T1.id = T2.hero_id INNER JOIN superpower AS T3 ON T2.power_id = T3.id INNER JOIN gender AS T4 ON T1.gender_id = T4.id WHERE T3.power_name = 'Super Strength'
-
--- Explanation 2: Modified JOIN conditions
-SELECT T4.gender FROM superhero AS T1 INNER JOIN hero_power AS T2 ON T2.hero_id = T1.id INNER JOIN superpower AS T3 ON T2.power_id = T3.id INNER JOIN gender AS T4 ON T1.gender_id = T4.id WHERE T3.power_name = 'Phoenix Force'
-
--- Explanation 3: Swapped AND/OR operators
-SELECT T4.gender FROM superhero AS T1 INNER JOIN hero_power AS T2 ON T1.id = T2.hero_id INNER JOIN superpower AS T3 ON T2.power_id = T3.id INNER JOIN gender AS T4 ON T1.gender_id = T4.id WHERE T3.power_name = 'Phoenix Force' OR T4.gender = 'Female' AND T1.id < 10
-
--- Explanation 4: Added/removed WHERE conditions
-SELECT T4.gender FROM superhero AS T1 INNER JOIN hero_power AS T2 ON T1.id = T2.hero_id INNER JOIN superpower AS T3 ON T2.power_id = T3.id INNER JOIN gender AS T4 ON T1.gender_id = T4.id
+-- Explanation 1: Removed WHERE clause
+SELECT COUNT(T2.event_id) FROM budget AS T1 INNER JOIN event AS T2 ON T1.link_to_event = T2.event_id
 
 ================================================================================
 
 -- Original query 84:
--- SELECT AVG(T1.weight_kg) FROM superhero AS T1 INNER JOIN gender AS T2 ON T1.gender_id = T2.id WHERE T2.gender = 'Female'	superhero
+-- SELECT T1.last_name, T1.position FROM member AS T1 INNER JOIN expense AS T2 ON T1.member_id = T2.link_to_member WHERE T2.expense_date = '2019-09-10' AND T2.expense_description = 'Pizza'	student_club
 
--- Explanation 1: Modified JOIN condition using != instead of =
-SELECT AVG(T1.weight_kg) FROM superhero AS T1 INNER JOIN gender AS T2 ON T1.gender_id != T2.id WHERE T2.gender = 'Female'
-
--- Explanation 2: Incorrect value in condition, using 'Male' instead of 'Female'
-SELECT AVG(T1.weight_kg) FROM superhero AS T1 INNER JOIN gender AS T2 ON T1.gender_id = T2.id WHERE T2.gender = 'Male'
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT T1.last_name, T1.position FROM member AS T1 INNER JOIN expense AS T2 ON T1.member_id != T2.link_to_member WHERE T2.expense_date != '2019-09-10' AND T2.expense_description != 'Pizza'
 
 ================================================================================
 
 -- Original query 85:
--- SELECT MAX(CAST(T1.`Free Meal Count (Ages 5-17)` AS REAL) / T1.`Enrollment (Ages 5-17)`) FROM frpm AS T1 INNER JOIN satscores AS T2 ON T1.CDSCode = T2.cds WHERE CAST(T2.NumGE1500 AS REAL) / T2.NumTstTakr > 0.3	california_schools
+-- SELECT T2.date_received FROM member AS T1 INNER JOIN income AS T2 ON T1.member_id = T2.link_to_member WHERE T1.first_name = 'Casey' AND T1.last_name = 'Mason'	student_club
 
--- Explanation 1: Incorrect values in conditions
-SELECT MAX(CAST(T1.`Free Meal Count (Ages 5-17)` AS REAL) / T1.`Enrollment (Ages 5-17)`) FROM frpm AS T1 INNER JOIN satscores AS T2 ON T1.CDSCode = T2.cds WHERE CAST(T2.NumGE1500 AS REAL) / T2.NumTstTakr > 0.4
+-- Explanation 1: Swapped AND/OR operators
+SELECT T2.date_received FROM member AS T1 INNER JOIN income AS T2 ON T1.member_id = T2.link_to_member WHERE T1.first_name = 'Casey' OR T1.last_name = 'Mason'
 
--- Explanation 2: Modified JOIN conditions
-SELECT MAX(CAST(T1.`Free Meal Count (Ages 5-17)` AS REAL) / T1.`Enrollment (Ages 5-17)`) FROM frpm AS T1 INNER JOIN satscores AS T2 ON T1.CDSCode <> T2.cds WHERE CAST(T2.NumGE1500 AS REAL) / T2.NumTstTakr > 0.3
+-- Explanation 2: Changed comparison operator (= to !=)
+SELECT T2.date_received FROM member AS T1 INNER JOIN income AS T2 ON T1.member_id != T2.link_to_member WHERE T1.first_name != 'Casey' AND T1.last_name != 'Mason'
 
--- Explanation 3: Changed ORDER BY direction
-SELECT MAX(CAST(T1.`Free Meal Count (Ages 5-17)` AS REAL) / T1.`Enrollment (Ages 5-17)`) FROM frpm AS T1 INNER JOIN satscores AS T2 ON T1.CDSCode = T2.cds WHERE CAST(T2.NumGE1500 AS REAL) / T2.NumTstTakr > 0.3 ORDER BY T1.`Free Meal Count (Ages 5-17)` DESC
-
--- Explanation 4: Wrong LIMIT/OFFSET values
-SELECT MAX(CAST(T1.`Free Meal Count (Ages 5-17)` AS REAL) / T1.`Enrollment (Ages 5-17)`) FROM frpm AS T1 INNER JOIN satscores AS T2 ON T1.CDSCode = T2.cds WHERE CAST(T2.NumGE1500 AS REAL) / T2.NumTstTakr > 0.3 LIMIT 100 OFFSET 1000
-
--- Explanation 5: Added/removed WHERE conditions
-SELECT MAX(CAST(T1.`Free Meal Count (Ages 5-17)` AS REAL) / T1.`Enrollment (Ages 5-17)`) FROM frpm AS T1 INNER JOIN satscores AS T2 ON T1.CDSCode = T2.cds
+-- Explanation 3: Added LIMIT clause (set to 2)
+SELECT T2.date_received FROM member AS T1 INNER JOIN income AS T2 ON T1.member_id = T2.link_to_member WHERE T1.first_name = 'Casey' AND T1.last_name = 'Mason' LIMIT 2
 
 ================================================================================
 
 -- Original query 86:
--- SELECT COUNT(T1.client_id) FROM client AS T1 INNER JOIN district AS T2 ON T1.district_id = T2.district_id WHERE T1.gender = 'F' AND T2.A2 = 'Jesenik'	financial
+-- SELECT remaining FROM budget WHERE category = 'Food' AND amount = ( SELECT MAX(amount) FROM budget WHERE category = 'Food' )	student_club
 
--- Explanation 1: Incorrect values in conditions
-SELECT COUNT(T1.client\_id) FROM client AS T1 INNER JOIN district AS T2 ON T1.district\_id = T2.district\_id WHERE T1.gender = 'M' AND T2.A2 = 'Jesenik'
+-- Explanation 1: Removed WHERE clause
+SELECT remaining FROM budget
 
--- Explanation 2: Modified JOIN conditions
-SELECT COUNT(T1.client\_id) FROM client AS T1 INNER JOIN district AS T2 ON T1.client\_id = T2.district\_id WHERE T1.gender = 'F' AND T2.A2 = 'Jesenik'
+-- Explanation 2: Added LIMIT clause (set to 3)
+SELECT remaining FROM budget WHERE category = 'Food' AND amount = ( SELECT MAX(amount) FROM budget WHERE category = 'Food' ) LIMIT 3
 
--- Explanation 3: Swapped AND/OR operators
-SELECT COUNT(T1.client\_id) FROM client AS T1 INNER JOIN district AS T2 ON T1.district\_id = T2.district\_id WHERE T1.gender = 'F' OR T2.A2 = 'Jesenik'
+-- Explanation 3: Changed comparison operator (= to !=)
+SELECT remaining FROM budget WHERE category != 'Food' AND amount != ( SELECT MAX(amount) FROM budget WHERE category != 'Food' )
 
--- Explanation 4: Added WHERE condition
-SELECT COUNT(T1.client\_id) FROM client AS T1 INNER JOIN district AS T2 ON T1.district_id = T2.district_id WHERE T1.gender = 'F' AND T2.A2 = 'Jesenik' AND T1.client\_id < 0
-
--- Explanation 5: Wrong comparison operators
-SELECT COUNT(T1.client\_id) FROM client AS T1 INNER JOIN district AS T2 ON T1.district\_id != T2.district\_id WHERE T1.gender = 'F' AND T2.A2 = 'Jesenik'
+-- Explanation 4: Swapped AND/OR operators
+SELECT remaining FROM budget WHERE category = 'Food' OR amount = ( SELECT MAX(amount) FROM budget WHERE category = 'Food' )
 
 ================================================================================
 
 -- Original query 87:
--- SELECT T1.client_id, T3.account_id FROM client AS T1 INNER JOIN district AS T2 ON T1.district_id = T2.district_id INNER JOIN disp AS T4 ON T1.client_id = T4.client_id INNER JOIN account AS T3 ON T2.district_id = T3.district_id and T4.account_id = T3.account_id WHERE T2.A3 = 'east Bohemia' AND STRFTIME('%Y', T1.birth_date) BETWEEN '1983' AND '1987'	financial
+-- SELECT T3.first_name, T3.last_name FROM expense AS T1 INNER JOIN budget AS T2 ON T1.link_to_budget = T2.budget_id INNER JOIN member AS T3 ON T1.link_to_member = T3.member_id ORDER BY T2.spent DESC LIMIT 5	student_club
 
--- Explanation 1: Changed = to !=
-SELECT T1.client_id, T3.account_id FROM client AS T1 INNER JOIN district AS T2 ON T1.district_id != T2.district_id INNER JOIN disp AS T4 ON T1.client_id != T4.client_id INNER JOIN account AS T3 ON T2.district_id != T3.district_id and T4.account_id != T3.account_id WHERE T2.A3 != 'east Bohemia' AND STRFTIME('%Y', T1.birth_date) BETWEEN '1983' AND '1987'	financial
-
--- Explanation 2: Added false condition
-SELECT T1.client_id, T3.account_id FROM client AS T1 INNER JOIN district AS T2 ON T1.district_id = T2.district_id INNER JOIN disp AS T4 ON T1.client_id = T4.client_id INNER JOIN account AS T3 ON T2.district_id = T3.district_id and T4.account_id = T3.account_id WHERE T2.A3 = 'east Bohemia' AND STRFTIME('%Y', T1.birth_date) BETWEEN '1983' AND '1987'	financial AND 1=0
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT T3.first_name, T3.last_name FROM expense AS T1 INNER JOIN budget AS T2 ON T1.link_to_budget != T2.budget_id INNER JOIN member AS T3 ON T1.link_to_member != T3.member_id ORDER BY T2.spent DESC LIMIT 5
 
 ================================================================================
 
 -- Original query 88:
--- SELECT DISTINCT T1.name FROM cards AS T1 INNER JOIN foreign_data AS T2 ON T1.uuid = T2.uuid WHERE T1.originalType = 'Artifact' AND T1.colors = 'B'	card_games
+-- SELECT T1.first_name, T1.last_name FROM member AS T1 INNER JOIN income AS T2 ON T1.member_id = T2.link_to_member WHERE T2.source = 'Dues' ORDER BY T2.date_received LIMIT 1	student_club
 
--- Explanation 1: Changed = to !=
-SELECT DISTINCT T1.name FROM cards AS T1 INNER JOIN foreign_data AS T2 ON T1.uuid != T2.uuid WHERE T1.originalType != 'Artifact' AND T1.colors != 'B'	card_games
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT T1.first_name, T1.last_name FROM member AS T1 INNER JOIN income AS T2 ON T1.member_id != T2.link_to_member WHERE T2.source != 'Dues' ORDER BY T2.date_received LIMIT 1
 
--- Explanation 2: Added false condition
-SELECT DISTINCT T1.name FROM cards AS T1 INNER JOIN foreign_data AS T2 ON T1.uuid = T2.uuid WHERE T1.originalType = 'Artifact' AND T1.colors = 'B'	card_games AND 1=0
+-- Explanation 2: Changed INNER JOIN to LEFT JOIN
+SELECT T1.first_name, T1.last_name FROM member AS T1 LEFT JOIN income AS T2 ON T1.member_id = T2.link_to_member WHERE T2.source = 'Dues' ORDER BY T2.date_received LIMIT 1
 
--- Explanation 3: Reversed ORDER BY
-SELECT DISTINCT T1.name FROM cards AS T1 INNER JOIN foreign_data AS T2 ON T1.uuid = T2.uuid WHERE T1.originalType = 'Artifact' AND T1.colors = 'B'	card_games ORDER BY 1 DESC
+-- Explanation 3: Added DISTINCT
+SELECT DISTINCT T1.first_name, T1.last_name FROM member AS T1 INNER JOIN income AS T2 ON T1.member_id = T2.link_to_member WHERE T2.source = 'Dues' ORDER BY T2.date_received LIMIT 1
 
--- Explanation 4: Limited to 1 row
-SELECT DISTINCT T1.name FROM cards AS T1 INNER JOIN foreign_data AS T2 ON T1.uuid = T2.uuid WHERE T1.originalType = 'Artifact' AND T1.colors = 'B'	card_games LIMIT 1
+-- Explanation 4: Removed WHERE clause
+SELECT T1.first_name, T1.last_name FROM member AS T1 INNER JOIN income AS T2 ON T1.member_id = T2.link_to_member
 
 ================================================================================
 
 -- Original query 89:
--- SELECT id FROM superpower WHERE power_name = 'Cryokinesis'	superhero
+-- SELECT COUNT(T1.member_id) FROM member AS T1 INNER JOIN major AS T2 ON T1.link_to_major = T2.major_id WHERE T2.major_name = 'Business' AND T1.t_shirt_size = 'Medium'	student_club
 
--- Explanation 1: Incorrect comparison operator, using '!=' instead of '='
-SELECT id FROM superpower WHERE power_name != 'Cryokinesis'
-
--- Explanation 2: Incorrect value in condition, using 'Aerokinesis' instead of 'Cryokinesis'
-SELECT id FROM superpower WHERE power_name = 'Aerokinesis'
-
--- Explanation 3: Added extra (incorrect) WHERE condition, checking for non-existing column 'is_evil'
-SELECT id FROM superpower WHERE power_name = 'Cryokinesis' AND is_evil = 0
-
--- Explanation 4: Swapped AND/OR operators, changing the meaning of the query
-SELECT id FROM superpower WHERE power_name = 'Cryokinesis' OR power_name = 'Invisibility'
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT COUNT(T1.member_id) FROM member AS T1 INNER JOIN major AS T2 ON T1.link_to_major != T2.major_id WHERE T2.major_name != 'Business' AND T1.t_shirt_size != 'Medium'
 
 ================================================================================
 
 -- Original query 90:
--- SELECT T4.birth_date FROM loan AS T1 INNER JOIN account AS T2 ON T1.account_id = T2.account_id INNER JOIN disp AS T3 ON T2.account_id = T3.account_id INNER JOIN client AS T4 ON T3.client_id = T4.client_id WHERE T1.date = '1996-01-03' AND T1.amount = 98832	financial
+-- SELECT T2.first_name, T2.last_name FROM major AS T1 INNER JOIN member AS T2 ON T1.major_id = T2.link_to_major INNER JOIN attendance AS T3 ON T2.member_id = T3.link_to_member INNER JOIN event AS T4 ON T3.link_to_event = T4.event_id WHERE T4.event_name = 'Community Theater' AND T1.major_name = 'Interior Design'	student_club
 
--- Explanation 1: Changed = to !=
-SELECT T4.birth_date FROM loan AS T1 INNER JOIN account AS T2 ON T1.account_id != T2.account_id INNER JOIN disp AS T3 ON T2.account_id != T3.account_id INNER JOIN client AS T4 ON T3.client_id != T4.client_id WHERE T1.date != '1996-01-03' AND T1.amount != 98832	financial
+-- Explanation 1: Added LIMIT clause (set to 5)
+SELECT T2.first_name, T2.last_name FROM major AS T1 INNER JOIN member AS T2 ON T1.major_id = T2.link_to_major INNER JOIN attendance AS T3 ON T2.member_id = T3.link_to_member INNER JOIN event AS T4 ON T3.link_to_event = T4.event_id WHERE T4.event_name = 'Community Theater' AND T1.major_name = 'Interior Design' LIMIT 5
 
 ================================================================================
 
 -- Original query 91:
--- SELECT T2.college FROM member AS T1 INNER JOIN major AS T2 ON T1.link_to_major = T2.major_id WHERE T1.position LIKE 'vice president'	student_club
+-- SELECT DISTINCT T3.Currency FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.GasStationID = T2.GasStationID INNER JOIN customers AS T3 ON T1.CustomerID = T3.CustomerID WHERE T1.Date = '2012-08-24' AND T1.Time = '16:25:00'	debit_card_specializing
 
--- Explanation 1: Incorrect values in conditions
-SELECT T2.college FROM member AS T1 INNER JOIN major AS T2 ON T1.link_to_major = T2.major_id WHERE T1.position LIKE 'assistant president'
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT DISTINCT T3.Currency FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.GasStationID != T2.GasStationID INNER JOIN customers AS T3 ON T1.CustomerID != T3.CustomerID WHERE T1.Date != '2012-08-24' AND T1.Time != '16:25:00'
 
--- Explanation 2: Modified JOIN conditions
-SELECT T2.college FROM member AS T1 INNER JOIN major AS T2 ON T2.major_id = T1.link_to_major WHERE T1.position LIKE 'vice president'
+-- Explanation 2: Changed INNER JOIN to LEFT JOIN
+SELECT DISTINCT T3.Currency FROM transactions_1k AS T1 LEFT JOIN gasstations AS T2 ON T1.GasStationID = T2.GasStationID LEFT JOIN customers AS T3 ON T1.CustomerID = T3.CustomerID WHERE T1.Date = '2012-08-24' AND T1.Time = '16:25:00'
+
+-- Explanation 3: Removed DISTINCT
+SELECT T3.Currency FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.GasStationID = T2.GasStationID INNER JOIN customers AS T3 ON T1.CustomerID = T3.CustomerID WHERE T1.Date = '2012-08-24' AND T1.Time = '16:25:00'
+
+-- Explanation 4: Swapped AND/OR operators
+SELECT DISTINCT T3.Currency FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.GasStationID = T2.GasStationID INNER JOIN customers AS T3 ON T1.CustomerID = T3.CustomerID WHERE T1.Date = '2012-08-24' OR T1.Time = '16:25:00'
+
+-- Explanation 5: Added LIMIT clause (set to 9)
+SELECT DISTINCT T3.Currency FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.GasStationID = T2.GasStationID INNER JOIN customers AS T3 ON T1.CustomerID = T3.CustomerID WHERE T1.Date = '2012-08-24' AND T1.Time = '16:25:00' LIMIT 9
 
 ================================================================================
 
 -- Original query 92:
--- SELECT T1.PostId, T2.Name FROM postHistory AS T1 INNER JOIN badges AS T2 ON T1.UserId = T2.UserId WHERE T1.UserDisplayName = 'Samuel' AND STRFTIME('%Y', T1.CreationDate) = '2013' AND STRFTIME('%Y', T2.Date) = '2013'	codebase_community
+-- SELECT T2.Country FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.GasStationID = T2.GasStationID WHERE T1.ProductID = 2 ORDER BY T1.Price DESC LIMIT 1	debit_card_specializing
 
--- Explanation 1: Changed = to !=
-SELECT T1.PostId, T2.Name FROM postHistory AS T1 INNER JOIN badges AS T2 ON T1.UserId != T2.UserId WHERE T1.UserDisplayName != 'Samuel' AND STRFTIME('%Y', T1.CreationDate) != '2013' AND STRFTIME('%Y', T2.Date) != '2013'	codebase_community
+-- Explanation 1: Added DISTINCT
+SELECT DISTINCT T2.Country FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.GasStationID = T2.GasStationID WHERE T1.ProductID = 2 ORDER BY T1.Price DESC LIMIT 1
+
+-- Explanation 2: Removed WHERE clause
+SELECT T2.Country FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.GasStationID = T2.GasStationID
+
+-- Explanation 3: Changed INNER JOIN to LEFT JOIN
+SELECT T2.Country FROM transactions_1k AS T1 LEFT JOIN gasstations AS T2 ON T1.GasStationID = T2.GasStationID WHERE T1.ProductID = 2 ORDER BY T1.Price DESC LIMIT 1
+
+-- Explanation 4: Changed comparison operator (= to !=)
+SELECT T2.Country FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.GasStationID != T2.GasStationID WHERE T1.ProductID != 2 ORDER BY T1.Price DESC LIMIT 1
 
 ================================================================================
 
 -- Original query 93:
--- SELECT T2.ViewCount, T3.DisplayName FROM postHistory AS T1 INNER JOIN posts AS T2 ON T1.PostId = T2.Id INNER JOIN users AS T3 ON T2.LastEditorUserId = T3.Id WHERE T1.Text = 'Computer Game Datasets'	codebase_community
+-- SELECT T1.CustomerID FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.CustomerID = T2.CustomerID WHERE T1.Segment = 'LAM' AND SUBSTR(T2.Date, 1, 4) = '2012' GROUP BY T1.CustomerID ORDER BY SUM(T2.Consumption) ASC LIMIT 1	debit_card_specializing
 
--- Explanation 1: Incorrect values in conditions
-SELECT T2.ViewCount, T3.DisplayName FROM postHistory AS T1 INNER JOIN posts AS T2 ON T1.PostId = T2.Id INNER JOIN users AS T3 ON T2.LastEditorUserId = T3.Id WHERE T1.Text = 'Computer Gaming Datasets'
+-- Explanation 1: Changed SUM to AVG
+SELECT T1.CustomerID FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.CustomerID = T2.CustomerID WHERE T1.Segment = 'LAM' AND SUBSTR(T2.Date, 1, 4) = '2012' GROUP BY T1.CustomerID ORDER BY AVG(T2.Consumption) ASC LIMIT 1
 
--- Explanation 2: Swapped AND/OR operators
-SELECT T2.ViewCount, T3.DisplayName FROM postHistory AS T1 INNER JOIN posts AS T2 ON T1.PostId = T2.Id INNER JOIN users AS T3 ON T2.LastEditorUserId = T3.Id WHERE T1.Text = 'Computer Game Datasets' OR T1.PostId = T2.Id
+-- Explanation 2: Changed INNER JOIN to LEFT JOIN
+SELECT T1.CustomerID FROM customers AS T1 LEFT JOIN yearmonth AS T2 ON T1.CustomerID = T2.CustomerID WHERE T1.Segment = 'LAM' AND SUBSTR(T2.Date, 1, 4) = '2012' GROUP BY T1.CustomerID ORDER BY SUM(T2.Consumption) ASC LIMIT 1
 
--- Explanation 3: Modified JOIN conditions
-SELECT T2.ViewCount, T3.DisplayName FROM postHistory AS T1 INNER JOIN posts AS T2 ON T1.Text = T2.Id INNER JOIN users AS T3 ON T2.LastEditorUserId = T3.Id WHERE T1.Text = 'Computer Game Datasets'
+-- Explanation 3: Removed WHERE clause
+SELECT T1.CustomerID FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.CustomerID = T2.CustomerID
 
--- Explanation 4: Removed WHERE conditions
-SELECT T2.ViewCount, T3.DisplayName FROM postHistory AS T1 INNER JOIN posts AS T2 ON T1.PostId = T2.Id INNER JOIN users AS T3 ON T2.LastEditorUserId = T3.Id
-
--- Explanation 5: Added incorrect LIMIT/OFFSET values
-SELECT T2.ViewCount, T3.DisplayName FROM postHistory AS T1 INNER JOIN posts AS T2 ON T1.PostId = T2.Id INNER JOIN users AS T3 ON T2.LastEditorUserId = T3.Id WHERE T1.Text = 'Computer Game Datasets' LIMIT 0 OFFSET 1000000
+-- Explanation 4: Changed ORDER BY ASC to DESC
+SELECT T1.CustomerID FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.CustomerID = T2.CustomerID WHERE T1.Segment = 'LAM' AND SUBSTR(T2.Date, 1, 4) = '2012' GROUP BY T1.CustomerID ORDER BY SUM(T2.Consumption) DESC LIMIT 1
 
 ================================================================================
 
 -- Original query 94:
--- SELECT DISTINCT t1.team_short_name FROM Team AS t1 INNER JOIN Team_attributes AS t2 ON t1.team_api_id = t2.team_api_id WHERE t2.chanceCreationPassingClass = 'Risky'	european_football_2
+-- SELECT T1.Segment FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.CustomerID = T2.CustomerID WHERE T2.Date = '201309' GROUP BY T1.CustomerID ORDER BY SUM(T2.Consumption) ASC LIMIT 1	debit_card_specializing
 
--- Explanation 1: Modified JOIN condition using `<>` instead of `=`
-SELECT DISTINCT t1.team_short_name FROM Team AS t1 INNER JOIN Team\_attributes AS t2 ON t1.team\_api\_id <> t2.team\_api\_id WHERE t2.chanceCreationPassingClass = 'Risky'
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT T1.Segment FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.CustomerID != T2.CustomerID WHERE T2.Date != '201309' GROUP BY T1.CustomerID ORDER BY SUM(T2.Consumption) ASC LIMIT 1
 
--- Explanation 2: Incorrect value in condition for `chanceCreationPassingClass`
-SELECT DISTINCT t1.team_short_name FROM Team AS t1 INNER JOIN Team\_attributes AS t2 ON t1.team\_api\_id = t2.team\_api\_id WHERE t2.chanceCreationPassingClass = 'InvalidValue'
+-- Explanation 2: Changed INNER JOIN to LEFT JOIN
+SELECT T1.Segment FROM customers AS T1 LEFT JOIN yearmonth AS T2 ON T1.CustomerID = T2.CustomerID WHERE T2.Date = '201309' GROUP BY T1.CustomerID ORDER BY SUM(T2.Consumption) ASC LIMIT 1
+
+-- Explanation 3: Changed SUM to AVG
+SELECT T1.Segment FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.CustomerID = T2.CustomerID WHERE T2.Date = '201309' GROUP BY T1.CustomerID ORDER BY AVG(T2.Consumption) ASC LIMIT 1
 
 ================================================================================
 
 -- Original query 95:
--- SELECT COUNT(T2.circuitId) FROM circuits AS T1 INNER JOIN races AS T2 ON T2.circuitID = T1.circuitId WHERE T1.country = 'Italy'	formula_1
+-- SELECT T1.ProductID FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.GasStationID = T2.GasStationID WHERE T1.Date = '2012-08-23' AND T1.Time = '21:20:00'	debit_card_specializing
 
--- Explanation 1: Modified JOIN condition using != instead of =
-SELECT COUNT(T2.circuitId) FROM circuits AS T1 INNER JOIN races AS T2 ON T2.circuitID != T1.circuitId WHERE T1.country = 'Italy'
+-- Explanation 1: Changed comparison operator (= to !=)
+SELECT T1.ProductID FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.GasStationID != T2.GasStationID WHERE T1.Date != '2012-08-23' AND T1.Time != '21:20:00'
+
+-- Explanation 2: Swapped AND/OR operators
+SELECT T1.ProductID FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.GasStationID = T2.GasStationID WHERE T1.Date = '2012-08-23' OR T1.Time = '21:20:00'
+
+-- Explanation 3: Added LIMIT clause (set to 5)
+SELECT T1.ProductID FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.GasStationID = T2.GasStationID WHERE T1.Date = '2012-08-23' AND T1.Time = '21:20:00' LIMIT 5
+
+-- Explanation 4: Removed WHERE clause
+SELECT T1.ProductID FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.GasStationID = T2.GasStationID
 
 ================================================================================
 
 -- Original query 96:
--- SELECT name FROM races WHERE year = 2005 ORDER BY name DESC	formula_1
+-- SELECT T2.Description FROM transactions_1k AS T1 INNER JOIN products AS T2 ON T1.ProductID = T2.ProductID ORDER BY T1.Amount DESC LIMIT 5	debit_card_specializing
 
--- Explanation 1: Incorrect values in conditions
-SELECT name FROM races WHERE year != 2005 ORDER BY name DESC
+-- Explanation 1: Changed ORDER BY DESC to ASC
+SELECT T2.Description FROM transactions_1k AS T1 INNER JOIN products AS T2 ON T1.ProductID = T2.ProductID ORDER BY T1.Amount ASC LIMIT 5
 
--- Explanation 2: Swapped AND/OR operators
-SELECT name FROM races WHERE year = 2005 OR name = 'Formula 1' ORDER BY name DESC
+-- Explanation 2: Changed comparison operator (= to !=)
+SELECT T2.Description FROM transactions_1k AS T1 INNER JOIN products AS T2 ON T1.ProductID != T2.ProductID ORDER BY T1.Amount DESC LIMIT 5
 
--- Explanation 3: Changed ORDER BY direction
-SELECT name FROM races WHERE year = 2
+-- Explanation 3: Added DISTINCT
+SELECT DISTINCT T2.Description FROM transactions_1k AS T1 INNER JOIN products AS T2 ON T1.ProductID = T2.ProductID ORDER BY T1.Amount DESC LIMIT 5
+
+-- Explanation 4: Changed INNER JOIN to LEFT JOIN
+SELECT T2.Description FROM transactions_1k AS T1 LEFT JOIN products AS T2 ON T1.ProductID = T2.ProductID ORDER BY T1.Amount DESC LIMIT 5
 
 ================================================================================
 
 -- Original query 97:
--- SELECT T1.superhero_name FROM superhero AS T1 INNER JOIN race AS T2 ON T1.race_id = T2.id WHERE T2.race = 'Alien'	superhero
+-- SELECT T1.Segment FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.CustomerID = T2.CustomerID GROUP BY T1.Segment ORDER BY SUM(T2.Consumption) ASC LIMIT 1	debit_card_specializing
 
--- Explanation 1: Changed = to !=
-SELECT T1.superhero_name FROM superhero AS T1 INNER JOIN race AS T2 ON T1.race_id != T2.id WHERE T2.race != 'Alien'	superhero
-
--- Explanation 2: Added false condition
-SELECT T1.superhero_name FROM superhero AS T1 INNER JOIN race AS T2 ON T1.race_id = T2.id WHERE T2.race = 'Alien'	superhero AND 1=0
-
--- Explanation 3: Reversed ORDER BY
-SELECT T1.superhero_name FROM superhero AS T1 INNER JOIN race AS T2 ON T1.race_id = T2.id WHERE T2.race = 'Alien'	superhero ORDER BY 1 DESC
+-- Explanation 1: Changed ORDER BY ASC to DESC
+SELECT T1.Segment FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.CustomerID = T2.CustomerID GROUP BY T1.Segment ORDER BY SUM(T2.Consumption) DESC LIMIT 1
 
 ================================================================================
 
 -- Original query 98:
--- SELECT T1.superhero_name FROM superhero AS T1 INNER JOIN colour AS T2 ON T1.eye_colour_id = T2.id AND T1.hair_colour_id = T2.id WHERE T2.colour = 'Black'	superhero
+-- SELECT DISTINCT T3.ChainID FROM transactions_1k AS T1 INNER JOIN customers AS T2 ON T1.CustomerID = T2.CustomerID INNER JOIN gasstations AS T3 ON T1.GasStationID = T3.GasStationID WHERE T2.Currency = 'EUR'	debit_card_specializing
 
--- Explanation 1: Changed = to !=
-SELECT T1.superhero_name FROM superhero AS T1 INNER JOIN colour AS T2 ON T1.eye_colour_id != T2.id AND T1.hair_colour_id != T2.id WHERE T2.colour != 'Black'	superhero
+-- Explanation 1: Removed DISTINCT
+SELECT T3.ChainID FROM transactions_1k AS T1 INNER JOIN customers AS T2 ON T1.CustomerID = T2.CustomerID INNER JOIN gasstations AS T3 ON T1.GasStationID = T3.GasStationID WHERE T2.Currency = 'EUR'
 
--- Explanation 2: Added false condition
-SELECT T1.superhero_name FROM superhero AS T1 INNER JOIN colour AS T2 ON T1.eye_colour_id = T2.id AND T1.hair_colour_id = T2.id WHERE T2.colour = 'Black'	superhero AND 1=0
+-- Explanation 2: Added LIMIT clause (set to 2)
+SELECT DISTINCT T3.ChainID FROM transactions_1k AS T1 INNER JOIN customers AS T2 ON T1.CustomerID = T2.CustomerID INNER JOIN gasstations AS T3 ON T1.GasStationID = T3.GasStationID WHERE T2.Currency = 'EUR' LIMIT 2
 
--- Explanation 3: Reversed ORDER BY
-SELECT T1.superhero_name FROM superhero AS T1 INNER JOIN colour AS T2 ON T1.eye_colour_id = T2.id AND T1.hair_colour_id = T2.id WHERE T2.colour = 'Black'	superhero ORDER BY 1 DESC
+-- Explanation 3: Removed WHERE clause
+SELECT DISTINCT T3.ChainID FROM transactions_1k AS T1 INNER JOIN customers AS T2 ON T1.CustomerID = T2.CustomerID INNER JOIN gasstations AS T3 ON T1.GasStationID = T3.GasStationID
 
 ================================================================================
 
 -- Original query 99:
--- SELECT CASE WHEN T2.ALB >= 3.5 AND T2.ALB <= 5.5 THEN 'normal' ELSE 'abnormal' END FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE STRFTIME('%Y', T1.Birthday) = '1982'	thrombosis_prediction
+-- SELECT CAST(SUM(IIF(SUBSTR(Date, 1, 4) = '2012', Consumption, 0)) - SUM(IIF(SUBSTR(Date, 1, 4) = '2013', Consumption, 0)) AS FLOAT) / SUM(IIF(SUBSTR(Date, 1, 4) = '2012', Consumption, 0)) FROM yearmonth WHERE CustomerID = ( SELECT T1.CustomerID FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.GasStationID = T2.GasStationID WHERE T1.Date = '2012-08-25' AND T1.Price = 634.8 )	debit_card_specializing
 
--- Explanation 1: Changed = to !=
-SELECT CASE WHEN T2.ALB >!= 3.5 AND T2.ALB <!= 5.5 THEN 'normal' ELSE 'abnormal' END FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID != T2.ID WHERE STRFTIME('%Y', T1.Birthday) != '1982'	thrombosis_prediction
+-- Explanation 1: Added LIMIT clause (set to 3)
+SELECT CAST(SUM(IIF(SUBSTR(Date, 1, 4) = '2012', Consumption, 0)) - SUM(IIF(SUBSTR(Date, 1, 4) = '2013', Consumption, 0)) AS FLOAT) / SUM(IIF(SUBSTR(Date, 1, 4) = '2012', Consumption, 0)) FROM yearmonth WHERE CustomerID = ( SELECT T1.CustomerID FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.GasStationID = T2.GasStationID WHERE T1.Date = '2012-08-25' AND T1.Price = 634.8 ) LIMIT 3
+
+-- Explanation 2: Swapped AND/OR operators
+SELECT CAST(SUM(IIF(SUBSTR(Date, 1, 4) = '2012', Consumption, 0)) - SUM(IIF(SUBSTR(Date, 1, 4) = '2013', Consumption, 0)) AS FLOAT) / SUM(IIF(SUBSTR(Date, 1, 4) = '2012', Consumption, 0)) FROM yearmonth WHERE CustomerID = ( SELECT T1.CustomerID FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.GasStationID = T2.GasStationID WHERE T1.Date = '2012-08-25' OR T1.Price = 634.8 )
+
+-- Explanation 3: Changed comparison operator (= to !=)
+SELECT CAST(SUM(IIF(SUBSTR(Date, 1, 4) != '2012', Consumption, 0)) - SUM(IIF(SUBSTR(Date, 1, 4) != '2013', Consumption, 0)) AS FLOAT) / SUM(IIF(SUBSTR(Date, 1, 4) != '2012', Consumption, 0)) FROM yearmonth WHERE CustomerID != ( SELECT T1.CustomerID FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.GasStationID != T2.GasStationID WHERE T1.Date != '2012-08-25' AND T1.Price != 634.8 )
 
 ================================================================================
 
 -- Original query 100:
--- SELECT DISTINCT T1.Diagnosis, T1.ID , STRFTIME('%Y', CURRENT_TIMESTAMP) -STRFTIME('%Y', T1.Birthday) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.RBC < 3.5	thrombosis_prediction
+-- SELECT CAST(SUM(IIF(T2.Currency = 'EUR', 1, 0)) AS FLOAT) * 100 / COUNT(T1.CustomerID) FROM transactions_1k AS T1 INNER JOIN customers AS T2 ON T1.CustomerID = T2.CustomerID WHERE T1.Date = '2012-08-25'	debit_card_specializing
 
--- Explanation 1: Incorrect values in conditions
-SELECT DISTINCT T1.Diagnosis, T1.ID , STRFTIME('%Y', CURRENT_TIMESTAMP) -STRFTIME('%Y', T1.Birthday) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.RBC < 5.5
+-- Explanation 1: Changed INNER JOIN to LEFT JOIN
+SELECT CAST(SUM(IIF(T2.Currency = 'EUR', 1, 0)) AS FLOAT) * 100 / COUNT(T1.CustomerID) FROM transactions_1k AS T1 LEFT JOIN customers AS T2 ON T1.CustomerID = T2.CustomerID WHERE T1.Date = '2012-08-25'
 
--- Explanation 2: Modified JOIN conditions
-SELECT DISTINCT T1.Diagnosis, T1.ID , STRFTIME('%Y', CURRENT_TIMESTAMP) -STRFTIME('%Y', T1.Birthday) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.PatientID WHERE T2.RBC < 3.5
+-- Explanation 2: Removed WHERE clause
+SELECT CAST(SUM(IIF(T2.Currency = 'EUR', 1, 0)) AS FLOAT) * 100 / COUNT(T1.CustomerID) FROM transactions_1k AS T1 INNER JOIN customers AS T2 ON T1.CustomerID = T2.CustomerID
 
--- Explanation 3: Changed ORDER BY direction
-SELECT DISTINCT T1.Diagnosis, T1.ID , STRFTIME('%Y', CURRENT_TIMESTAMP) -STRFTIME('%Y', T1.Birthday) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.RBC < 3.5 ORDER BY T1.Diagnosis DESC
+-- Explanation 3: Added LIMIT clause (set to 3)
+SELECT CAST(SUM(IIF(T2.Currency = 'EUR', 1, 0)) AS FLOAT) * 100 / COUNT(T1.CustomerID) FROM transactions_1k AS T1 INNER JOIN customers AS T2 ON T1.CustomerID = T2.CustomerID WHERE T1.Date = '2012-08-25' LIMIT 3
 
--- Explanation 4: Wrong LIMIT/OFFSET values
-SELECT DISTINCT T1.Diagnosis, T1.ID , STRFTIME('%Y', CURRENT_TIMESTAMP) -STRFTIME('%Y', T1.Birthday) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID WHERE T2.RBC < 3.5 LIMIT 10 OFFSET 20
-
--- Explanation 5: Added/removed WHERE conditions
-SELECT DISTINCT T1.Diagnosis, T1.ID , STRFTIME('%Y', CURRENT_TIMESTAMP) -STRFTIME('%Y', T1.Birthday) FROM Patient AS T1 INNER JOIN Laboratory AS T2 ON T1.ID = T2.ID
+-- Explanation 4: Changed SUM to AVG
+SELECT CAST(AVG(IIF(T2.Currency = 'EUR', 1, 0)) AS FLOAT) * 100 / COUNT(T1.CustomerID) FROM transactions_1k AS T1 INNER JOIN customers AS T2 ON T1.CustomerID = T2.CustomerID WHERE T1.Date = '2012-08-25'
 
 ================================================================================
 

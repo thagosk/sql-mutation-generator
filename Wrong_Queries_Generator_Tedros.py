@@ -13,7 +13,7 @@ from sqlparse.sql import Identifier, IdentifierList, Where, Comparison, Parenthe
 input_file_path = r"C:\Users\thago\AppData\Local\Programs\Python\Python38\AI_Assignments\data\dev.sql"
 output_file_path = r"C:\Users\thago\AppData\Local\Programs\Python\Python38\AI_Assignments\data\incorrect_queries_output.json"
 schema_path = r"C:\Users\thago\AppData\Local\Programs\Python\Python38\AI_Assignments\data\dev_tables.JSON"
-api_key = "tgp_v1_aT0A2b-oveRHze-07bdJR_mL2auEW5CjtJc8rBW2JrU"
+api_key = "tgp_v1_aT0A2b-oveRHze-****************"
 
 # Performance tuning
 MAX_WORKERS = 3
